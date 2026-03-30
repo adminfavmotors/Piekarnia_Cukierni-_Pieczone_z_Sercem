@@ -1,0 +1,25 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Local scratch files
+.repo-check-readme.txt
+
+# Reference screenshots
+*.png
+
+# Web app
+web/node_modules/
+web/.next/
+web/out/
+web/coverage/
+web/.vercel/
+web/dev-server.out.log
+web/dev-server.err.log
+web/qa-artifacts/
+web/npm-debug.log*
+web/yarn-debug.log*
+web/yarn-error.log*
+web/.pnpm-debug.log*
+web/*.tsbuildinfo
+web/.env*
