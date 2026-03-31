@@ -69,14 +69,22 @@ export function HomePageClient() {
 
     const desktopMedia = gsap.matchMedia();
     const dailyViewport = root.querySelector<HTMLElement>("[data-daily-viewport]");
+    const dailyTrack = root.querySelector<HTMLElement>("[data-daily-track]");
+
+    let dailyDesktopTrigger: ScrollTrigger | null = null;
+    let getDailyDesktopDistance = () => 0;
 
     let removeDailyTouchHandlers = () => {};
 
-    if (dailyViewport) {
+    if (dailyViewport && dailyTrack) {
       let startX = 0;
       let startY = 0;
       let startScrollLeft = 0;
       let horizontalLock = false;
+      let isPointerDragging = false;
+      let activePointerId: number | null = null;
+      let pointerStartX = 0;
+      let pointerStartOffset = 0;
 
       const onTouchStart = (event: TouchEvent) => {
         if (window.innerWidth >= 1024 || event.touches.length !== 1) {
@@ -113,16 +121,96 @@ export function HomePageClient() {
         }
       };
 
+      const syncDesktopScene = (nextOffset: number) => {
+        if (!dailyDesktopTrigger) {
+          return;
+        }
+
+        const distance = getDailyDesktopDistance();
+
+        if (!distance) {
+          return;
+        }
+
+        const clampedOffset = gsap.utils.clamp(0, distance, nextOffset);
+        const span = dailyDesktopTrigger.end - dailyDesktopTrigger.start;
+        const progress = clampedOffset / distance;
+        const targetY = dailyDesktopTrigger.start + span * progress;
+
+        window.scrollTo({
+          top: targetY,
+          left: window.scrollX,
+          behavior: "auto",
+        });
+
+        ScrollTrigger.update();
+      };
+
+      const onPointerDown = (event: PointerEvent) => {
+        if (window.innerWidth < 1024 || event.pointerType === "touch") {
+          return;
+        }
+
+        if (!dailyDesktopTrigger) {
+          return;
+        }
+
+        isPointerDragging = true;
+        activePointerId = event.pointerId;
+        pointerStartX = event.clientX;
+        pointerStartOffset = Math.abs(
+          Number(gsap.getProperty(dailyTrack, "x")) || 0,
+        );
+
+        dailyViewport.setPointerCapture(event.pointerId);
+        event.preventDefault();
+      };
+
+      const onPointerMove = (event: PointerEvent) => {
+        if (
+          !isPointerDragging ||
+          activePointerId !== event.pointerId ||
+          window.innerWidth < 1024
+        ) {
+          return;
+        }
+
+        const deltaX = event.clientX - pointerStartX;
+        syncDesktopScene(pointerStartOffset - deltaX);
+        event.preventDefault();
+      };
+
+      const stopPointerDrag = (event: PointerEvent) => {
+        if (activePointerId !== event.pointerId) {
+          return;
+        }
+
+        isPointerDragging = false;
+        activePointerId = null;
+
+        if (dailyViewport.hasPointerCapture(event.pointerId)) {
+          dailyViewport.releasePointerCapture(event.pointerId);
+        }
+      };
+
       dailyViewport.addEventListener("touchstart", onTouchStart, {
         passive: true,
       });
       dailyViewport.addEventListener("touchmove", onTouchMove, {
         passive: false,
       });
+      dailyViewport.addEventListener("pointerdown", onPointerDown);
+      dailyViewport.addEventListener("pointermove", onPointerMove);
+      dailyViewport.addEventListener("pointerup", stopPointerDrag);
+      dailyViewport.addEventListener("pointercancel", stopPointerDrag);
 
       removeDailyTouchHandlers = () => {
         dailyViewport.removeEventListener("touchstart", onTouchStart);
         dailyViewport.removeEventListener("touchmove", onTouchMove);
+        dailyViewport.removeEventListener("pointerdown", onPointerDown);
+        dailyViewport.removeEventListener("pointermove", onPointerMove);
+        dailyViewport.removeEventListener("pointerup", stopPointerDrag);
+        dailyViewport.removeEventListener("pointercancel", stopPointerDrag);
       };
     }
 
@@ -469,35 +557,41 @@ export function HomePageClient() {
           },
         );
 
-        const dailyCarousel = root.querySelector<HTMLElement>(
-          "[data-daily-carousel]",
+        const dailySection = root.querySelector<HTMLElement>(
+          "[data-theme-section='daily']",
         );
-        const dailyViewport = root.querySelector<HTMLElement>(
-          "[data-daily-viewport]",
-        );
-        const dailyTrack = root.querySelector<HTMLElement>("[data-daily-track]");
+        const dailyShell = root.querySelector<HTMLElement>("[data-daily-shell]");
 
-        if (dailyCarousel && dailyViewport && dailyTrack) {
+        if (dailySection && dailyShell && dailyViewport && dailyTrack) {
           const getDistance = () =>
             Math.max(0, dailyTrack.scrollWidth - dailyViewport.clientWidth);
           const getScrollSpan = () =>
-            Math.max(window.innerHeight * 0.95, getDistance() * 0.58);
+            Math.max(window.innerHeight * 0.85, getDistance() * 0.5);
+
+          getDailyDesktopDistance = getDistance;
 
           if (getDistance() > 0) {
-            gsap.to(dailyTrack, {
+            const animation = gsap.to(dailyTrack, {
               x: () => -getDistance(),
               ease: "none",
               scrollTrigger: {
-                trigger: dailyCarousel,
+                trigger: dailySection,
                 start: "top top+=96",
                 end: () => `+=${getScrollSpan()}`,
                 scrub: 0.95,
-                pin: true,
+                pin: dailyShell,
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
               },
             });
+
+            dailyDesktopTrigger = animation.scrollTrigger ?? null;
           }
+
+          return () => {
+            dailyDesktopTrigger = null;
+            getDailyDesktopDistance = () => 0;
+          };
         }
       });
     }, root);
@@ -879,7 +973,7 @@ export function HomePageClient() {
             <div data-daily-carousel className="grid gap-6">
               <div
                 data-daily-viewport
-                className="snap-x snap-mandatory touch-pan-x overscroll-x-contain overflow-x-auto pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden lg:overflow-hidden lg:pb-0 lg:touch-auto"
+                className="snap-x snap-mandatory touch-pan-x overscroll-x-contain select-none overflow-x-auto pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden lg:cursor-grab lg:overflow-hidden lg:pb-0 lg:touch-auto lg:active:cursor-grabbing"
               >
                 <div
                   data-daily-track
