@@ -11,11 +11,11 @@ import {
   Wheat,
 } from "lucide-react";
 import { gsap } from "gsap";
-import { Draggable } from "gsap/all";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { BakeCard } from "@/components/home/bake-card";
+import { DailyBakesSection } from "@/components/home/daily-bakes-section";
 import { SectionHeading } from "@/components/home/section-heading";
+import { useDailyBakesScene } from "@/components/home/use-daily-bakes-scene";
 import { siteData } from "@/data/site";
 
 const scenePillars = [
@@ -48,12 +48,12 @@ const ingredientNotes = [
   "Sezonowe dodatki pojawiają się wtedy, kiedy naprawdę smakują najlepiej.",
 ] as const;
 
-const seasonLabels = ["Wiosna", "Lato", "Jesień", "Zima"] as const;
-
-gsap.registerPlugin(ScrollTrigger, Draggable);
+gsap.registerPlugin(ScrollTrigger);
 
 export function HomePageClient() {
   const rootRef = useRef<HTMLElement | null>(null);
+
+  useDailyBakesScene(rootRef);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -71,146 +71,6 @@ export function HomePageClient() {
     };
 
     const desktopMedia = gsap.matchMedia();
-    const setWindowScroll = ScrollTrigger.getScrollFunc(window);
-    const dailyScene = root.querySelector<HTMLElement>("[data-daily-scene]");
-    const dailyViewport = root.querySelector<HTMLElement>("[data-daily-viewport]");
-    const dailyTrack = root.querySelector<HTMLElement>("[data-daily-track]");
-    const seasonalViewport = root.querySelector<HTMLElement>(
-      "[data-seasonal-viewport]",
-    );
-
-    let dailyDesktopTrigger: ScrollTrigger | null = null;
-    let getDailyDesktopDistance = () => 0;
-
-    const interactionCleanups: Array<() => void> = [];
-
-    const bindNativeHorizontalViewport = (
-      viewport: HTMLElement,
-      options?: { enableDesktopPointer?: boolean },
-    ) => {
-      let startX = 0;
-      let startY = 0;
-      let startScrollLeft = 0;
-      let horizontalLock = false;
-      let isPointerDragging = false;
-      let activePointerId: number | null = null;
-      let pointerStartX = 0;
-      let pointerStartOffset = 0;
-
-      const onTouchStart = (event: TouchEvent) => {
-        if (event.touches.length !== 1) {
-          return;
-        }
-
-        const touch = event.touches[0];
-        startX = touch.clientX;
-        startY = touch.clientY;
-        startScrollLeft = viewport.scrollLeft;
-        horizontalLock = false;
-      };
-
-      const onTouchMove = (event: TouchEvent) => {
-        if (event.touches.length !== 1) {
-          return;
-        }
-
-        const touch = event.touches[0];
-        const deltaX = touch.clientX - startX;
-        const deltaY = touch.clientY - startY;
-
-        if (!horizontalLock) {
-          if (Math.abs(deltaX) > Math.abs(deltaY) + 8) {
-            horizontalLock = true;
-          } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
-            return;
-          }
-        }
-
-        if (horizontalLock) {
-          event.preventDefault();
-          viewport.scrollLeft = startScrollLeft - deltaX;
-        }
-      };
-
-      const onPointerDown = (event: PointerEvent) => {
-        if (
-          event.pointerType === "touch" ||
-          !options?.enableDesktopPointer
-        ) {
-          return;
-        }
-
-        isPointerDragging = true;
-        activePointerId = event.pointerId;
-        pointerStartX = event.clientX;
-        pointerStartOffset = viewport.scrollLeft;
-
-        viewport.setPointerCapture(event.pointerId);
-        event.preventDefault();
-      };
-
-      const onPointerMove = (event: PointerEvent) => {
-        if (
-          !isPointerDragging ||
-          activePointerId !== event.pointerId ||
-          window.innerWidth < 1024
-        ) {
-          return;
-        }
-
-        const deltaX = event.clientX - pointerStartX;
-        const nextOffset = pointerStartOffset - deltaX;
-        viewport.scrollLeft = nextOffset;
-
-        event.preventDefault();
-      };
-
-      const stopPointerDrag = (event: PointerEvent) => {
-        if (activePointerId !== event.pointerId) {
-          return;
-        }
-
-        isPointerDragging = false;
-        activePointerId = null;
-
-        if (viewport.hasPointerCapture(event.pointerId)) {
-          viewport.releasePointerCapture(event.pointerId);
-        }
-      };
-
-      viewport.addEventListener("touchstart", onTouchStart, {
-        passive: true,
-      });
-      viewport.addEventListener("touchmove", onTouchMove, {
-        passive: false,
-      });
-      viewport.addEventListener("pointerdown", onPointerDown);
-      viewport.addEventListener("pointermove", onPointerMove);
-      viewport.addEventListener("pointerup", stopPointerDrag);
-      viewport.addEventListener("pointercancel", stopPointerDrag);
-
-      interactionCleanups.push(() => {
-        viewport.removeEventListener("touchstart", onTouchStart);
-        viewport.removeEventListener("touchmove", onTouchMove);
-        viewport.removeEventListener("pointerdown", onPointerDown);
-        viewport.removeEventListener("pointermove", onPointerMove);
-        viewport.removeEventListener("pointerup", stopPointerDrag);
-        viewport.removeEventListener("pointercancel", stopPointerDrag);
-      });
-    };
-
-    if (dailyViewport) {
-      bindNativeHorizontalViewport(dailyViewport, {
-        enableDesktopPointer: false,
-      });
-    }
-
-    if (seasonalViewport) {
-      bindNativeHorizontalViewport(seasonalViewport, {
-        enableDesktopPointer: true,
-      });
-    }
-
     const context = gsap.context(() => {
       const themeSections = gsap.utils.toArray<HTMLElement>(
         "[data-theme-section]",
@@ -533,85 +393,11 @@ export function HomePageClient() {
           },
         });
 
-        if (dailyScene && dailyViewport && dailyTrack) {
-          const getDistance = () =>
-            Math.max(0, dailyTrack.scrollWidth - dailyViewport.clientWidth);
-
-          const syncSceneOffset = (nextOffset: number) => {
-            if (!dailyDesktopTrigger) {
-              return;
-            }
-
-            const distance = getDailyDesktopDistance();
-
-            if (!distance) {
-              return;
-            }
-
-            const clampedOffset = gsap.utils.clamp(0, distance, nextOffset);
-            const span = dailyDesktopTrigger.end - dailyDesktopTrigger.start;
-            const progress = clampedOffset / distance;
-            const targetY = dailyDesktopTrigger.start + span * progress;
-
-            setWindowScroll(targetY);
-            ScrollTrigger.update();
-          };
-
-          getDailyDesktopDistance = getDistance;
-
-          if (getDistance() > 0) {
-            const animation = gsap.to(dailyTrack, {
-              x: () => -getDistance(),
-              ease: "none",
-              scrollTrigger: {
-                trigger: dailyScene,
-                start: "top top+=96",
-                end: () => `+=${getDistance()}`,
-                scrub: true,
-                pin: dailyScene,
-                anticipatePin: 1,
-                invalidateOnRefresh: true,
-              },
-            });
-
-            dailyDesktopTrigger = animation.scrollTrigger ?? null;
-
-            const dragProxy = document.createElement("div");
-            let dragStartOffset = 0;
-
-            const draggable = Draggable.create(dragProxy, {
-              trigger: dailyViewport,
-              type: "x",
-              zIndexBoost: false,
-              allowContextMenu: true,
-              onPress() {
-                dragStartOffset = Math.abs(
-                  Number(gsap.getProperty(dailyTrack, "x")) || 0,
-                );
-                dailyViewport.style.cursor = "grabbing";
-                gsap.set(dragProxy, { x: 0 });
-              },
-              onDrag() {
-                syncSceneOffset(dragStartOffset - this.x);
-              },
-              onRelease() {
-                dailyViewport.style.cursor = "";
-              },
-            })[0];
-
-            return () => {
-              draggable.kill();
-              dailyDesktopTrigger = null;
-              getDailyDesktopDistance = () => 0;
-            };
-          }
-        }
       });
     }, root);
 
     return () => {
       delete document.body.dataset.theme;
-      interactionCleanups.forEach((cleanup) => cleanup());
       desktopMedia.revert();
       context.revert();
     };
@@ -961,106 +747,7 @@ export function HomePageClient() {
         />
       </section>
 
-      <section
-        id="co-dzis-pieczemy"
-        data-theme-section="daily"
-        className="relative z-50 -mt-8 px-4 pt-0 sm:-mt-12 sm:px-6 lg:-mt-[22svh] lg:px-10"
-      >
-        <div
-          data-daily-shell
-          className="mx-auto max-w-[92rem] overflow-hidden rounded-[2.5rem] border border-[rgba(79,45,30,0.08)] bg-[linear-gradient(180deg,#fff7ef_0%,#f3dfcf_100%)] px-5 pb-10 pt-10 shadow-[0_42px_120px_rgba(79,45,30,0.14)] sm:px-8 sm:pb-12 sm:pt-12 lg:px-10 lg:pb-14 lg:pt-14"
-        >
-          <div className="grid gap-6">
-            <div className="max-w-[46rem]">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-accent)]">
-                Co dziś pieczemy
-              </p>
-              <p className="mt-4 font-display text-[2.5rem] leading-[0.94] tracking-[-0.05em] text-[var(--color-brown-deep)] sm:text-5xl">
-                Codzienna tablica wypieków pokazuje, co dziś trafia do pieca i na ladę.
-              </p>
-              <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--color-brown-soft)] sm:text-lg">
-                Najpierw pokazujemy to, co dziś trafia na ladę, a niżej osobno zbieramy sezonowe smaki i powroty, na które warto czekać.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {siteData.categories.map((category) => (
-                <span
-                  key={category}
-                  className="inline-flex rounded-full border border-[rgba(79,45,30,0.12)] bg-white/76 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brown-soft)]"
-                >
-                  {category}
-                </span>
-              ))}
-            </div>
-
-            <div
-              data-daily-scene
-              className="relative overflow-hidden rounded-[2.1rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.5)] px-0 py-0 lg:cursor-grab lg:min-h-[33rem] lg:active:cursor-grabbing"
-            >
-              <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-16 bg-[linear-gradient(90deg,rgba(255,247,239,0.94),rgba(255,247,239,0))] lg:block" />
-              <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-24 bg-[linear-gradient(270deg,rgba(255,247,239,0.96),rgba(255,247,239,0))] lg:block" />
-              <div
-                data-daily-viewport
-                className="snap-x snap-mandatory touch-pan-x overscroll-x-contain select-none overflow-x-auto px-5 py-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:px-6 lg:h-full lg:snap-none lg:overflow-hidden lg:px-8 lg:py-8 lg:touch-auto"
-              >
-                <div
-                  data-daily-track
-                  data-stagger-group
-                  className="flex w-max gap-4 pr-4 sm:pr-6 lg:gap-5 lg:pr-[10vw]"
-                >
-                  {siteData.dailyBakes.map((bake, index) => (
-                    <div
-                      key={bake.name}
-                      data-stagger-item
-                      className={`w-[84vw] shrink-0 snap-start sm:w-[22rem] lg:w-[23rem] ${
-                        index === 0 ? "lg:w-[31rem]" : ""
-                      }`}
-                    >
-                      <BakeCard bake={bake} featured={index === 0} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="grid gap-5 pt-2">
-              <div className="max-w-[38rem]">
-                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-accent)]">
-                  Sezonowość
-                </p>
-                <p className="mt-3 font-display text-[2rem] leading-[0.96] tracking-[-0.04em] text-[var(--color-brown-deep)] sm:text-[2.5rem]">
-                  Sezonowe smaki dostają własny rytm i własną karuzelę.
-                </p>
-              </div>
-
-              <div
-                data-seasonal-viewport
-                className="snap-x snap-mandatory touch-pan-x overscroll-x-contain select-none overflow-x-auto pb-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden lg:cursor-grab lg:pb-1 lg:active:cursor-grabbing"
-              >
-                <div className="flex w-max gap-4 pr-4 sm:pr-6">
-                  {siteData.seasonalMoments.map((item, index) => (
-                    <div
-                      key={item}
-                      className="w-[82vw] max-w-[21rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.82)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[22rem] lg:w-[24rem]"
-                    >
-                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-                        {seasonLabels[index] ?? "Sezon"}
-                      </p>
-                      <p className="mt-4 font-display text-[2rem] leading-none tracking-[-0.04em] text-[var(--color-brown-deep)]">
-                        {seasonLabels[index] ?? "Sezon"}
-                      </p>
-                      <p className="mt-4 text-sm leading-6 text-[var(--color-brown-soft)]">
-                        {item}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <DailyBakesSection />
 
       <section
         data-theme-section="contact"
