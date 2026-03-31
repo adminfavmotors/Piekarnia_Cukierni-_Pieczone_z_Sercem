@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
@@ -412,16 +412,34 @@ export function HomePageClient() {
           },
         );
 
-        gsap.to("[data-daily-rail]", {
-          yPercent: -10,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='daily']",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.9,
-          },
-        });
+        const dailyCarousel = root.querySelector<HTMLElement>(
+          "[data-daily-carousel]",
+        );
+        const dailyViewport = root.querySelector<HTMLElement>(
+          "[data-daily-viewport]",
+        );
+        const dailyTrack = root.querySelector<HTMLElement>("[data-daily-track]");
+
+        if (dailyCarousel && dailyViewport && dailyTrack) {
+          const getDistance = () =>
+            Math.max(0, dailyTrack.scrollWidth - dailyViewport.clientWidth);
+
+          if (getDistance() > 0) {
+            gsap.to(dailyTrack, {
+              x: () => -getDistance(),
+              ease: "none",
+              scrollTrigger: {
+                trigger: dailyCarousel,
+                start: "top top+=112",
+                end: () => `+=${getDistance() + window.innerHeight * 0.25}`,
+                scrub: 0.95,
+                pin: true,
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
+              },
+            });
+          }
+        }
       });
     }, root);
 
@@ -794,54 +812,71 @@ export function HomePageClient() {
                 Codzienna tablica wypieków pokazuje, co dziś trafia do pieca i na ladę.
               </p>
               <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--color-brown-soft)] sm:text-lg">
-                Dziś pieczemy to, co najbardziej lubią nasi goście, plus kilka sezonowych akcentów. Prosto, czytelnie i bez udawania sklepu online.
+                Zamiast rozstrzelonego układu jest jeden płynny moduł: wprowadzenie, wypieki dnia i sezonowość w tym samym rytmie przewijania.
               </p>
             </div>
 
-            <div className="grid gap-10 lg:grid-cols-[0.34fr_0.66fr]">
-              <div data-daily-rail className="space-y-6 lg:sticky lg:top-28 lg:self-start">
-                <SectionHeading
-                  eyebrow="Dzisiejsza tablica"
-                  title="Sprawdź, co dziś czeka na Ciebie w piekarni."
-                  description="To nie jest sklep online, tylko prosta tablica dnia: ulubione wypieki, sezonowe akcenty i szybki sygnał, co znika najchętniej."
-                />
-
-                <div className="flex flex-wrap gap-2">
-                  {siteData.categories.map((category) => (
-                    <span
-                      key={category}
-                      className="inline-flex rounded-full border border-[rgba(79,45,30,0.12)] bg-white/76 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brown-soft)]"
-                    >
-                      {category}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div data-stagger-group className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-                {siteData.dailyBakes.map((bake, index) => (
+            <div data-daily-carousel className="grid gap-6">
+              <div
+                data-daily-viewport
+                className="snap-x snap-mandatory overflow-x-auto pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden lg:overflow-hidden lg:pb-0"
+              >
+                <div
+                  data-daily-track
+                  data-stagger-group
+                  className="flex w-max gap-4 lg:gap-6"
+                >
                   <div
-                    key={bake.name}
                     data-stagger-item
-                    className={index === 0 ? "xl:col-span-2" : ""}
+                    className="w-[84vw] max-w-[24rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.9)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[26rem] lg:w-[29rem]"
                   >
-                    <BakeCard bake={bake} featured={index === 0} />
-                  </div>
-                ))}
+                    <SectionHeading
+                      eyebrow="Dzisiejsza tablica"
+                      title="Sprawdź, co dziś czeka na Ciebie w piekarni."
+                      description="To nie jest sklep online, tylko prosta tablica dnia: ulubione wypieki, sezonowe akcenty i szybki sygnał, co znika najchętniej."
+                    />
 
-                <div className="rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.8)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] xl:col-span-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-accent)]">
-                    Sezonowość
-                  </p>
-                  <div className="mt-5 grid gap-3 md:grid-cols-2">
-                    {siteData.seasonalMoments.map((item) => (
-                      <div
-                        key={item}
-                        className="rounded-[1.25rem] border border-[rgba(79,45,30,0.08)] bg-white/72 px-4 py-4 text-sm leading-6 text-[var(--color-brown-soft)]"
-                      >
-                        {item}
-                      </div>
-                    ))}
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {siteData.categories.map((category) => (
+                        <span
+                          key={category}
+                          className="inline-flex rounded-full border border-[rgba(79,45,30,0.12)] bg-white/76 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brown-soft)]"
+                        >
+                          {category}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {siteData.dailyBakes.map((bake, index) => (
+                    <div
+                      key={bake.name}
+                      data-stagger-item
+                      className={`w-[84vw] shrink-0 snap-start sm:w-[26rem] lg:w-[30rem] ${
+                        index === 0 ? "lg:w-[38rem]" : ""
+                      }`}
+                    >
+                      <BakeCard bake={bake} featured={index === 0} />
+                    </div>
+                  ))}
+
+                  <div
+                    data-stagger-item
+                    className="w-[84vw] max-w-[24rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.8)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[28rem] lg:w-[32rem]"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-accent)]">
+                      Sezonowość
+                    </p>
+                    <div className="mt-5 grid gap-3">
+                      {siteData.seasonalMoments.map((item) => (
+                        <div
+                          key={item}
+                          className="rounded-[1.25rem] border border-[rgba(79,45,30,0.08)] bg-white/72 px-4 py-4 text-sm leading-6 text-[var(--color-brown-soft)]"
+                        >
+                          {item}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
