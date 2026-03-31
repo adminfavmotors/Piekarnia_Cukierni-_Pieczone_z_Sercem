@@ -11,6 +11,7 @@ import {
   Wheat,
 } from "lucide-react";
 import { gsap } from "gsap";
+import { Draggable } from "gsap/all";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { BakeCard } from "@/components/home/bake-card";
@@ -49,7 +50,7 @@ const ingredientNotes = [
 
 const seasonLabels = ["Wiosna", "Lato", "Jesień", "Zima"] as const;
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, Draggable);
 
 export function HomePageClient() {
   const rootRef = useRef<HTMLElement | null>(null);
@@ -70,6 +71,8 @@ export function HomePageClient() {
     };
 
     const desktopMedia = gsap.matchMedia();
+    const setWindowScroll = ScrollTrigger.getScrollFunc(window);
+    const dailyScene = root.querySelector<HTMLElement>("[data-daily-scene]");
     const dailyViewport = root.querySelector<HTMLElement>("[data-daily-viewport]");
     const dailyTrack = root.querySelector<HTMLElement>("[data-daily-track]");
     const seasonalViewport = root.querySelector<HTMLElement>(
@@ -81,12 +84,9 @@ export function HomePageClient() {
 
     const interactionCleanups: Array<() => void> = [];
 
-    const bindHorizontalViewport = (
+    const bindNativeHorizontalViewport = (
       viewport: HTMLElement,
-      options?: {
-        getDesktopOffset?: () => number;
-        setDesktopOffset?: (nextOffset: number) => void;
-      },
+      options?: { enableDesktopPointer?: boolean },
     ) => {
       let startX = 0;
       let startY = 0;
@@ -98,7 +98,7 @@ export function HomePageClient() {
       let pointerStartOffset = 0;
 
       const onTouchStart = (event: TouchEvent) => {
-        if (window.innerWidth >= 1024 || event.touches.length !== 1) {
+        if (event.touches.length !== 1) {
           return;
         }
 
@@ -110,7 +110,7 @@ export function HomePageClient() {
       };
 
       const onTouchMove = (event: TouchEvent) => {
-        if (window.innerWidth >= 1024 || event.touches.length !== 1) {
+        if (event.touches.length !== 1) {
           return;
         }
 
@@ -133,16 +133,17 @@ export function HomePageClient() {
       };
 
       const onPointerDown = (event: PointerEvent) => {
-        if (window.innerWidth < 1024 || event.pointerType === "touch") {
+        if (
+          event.pointerType === "touch" ||
+          !options?.enableDesktopPointer
+        ) {
           return;
         }
 
         isPointerDragging = true;
         activePointerId = event.pointerId;
         pointerStartX = event.clientX;
-        pointerStartOffset = options?.getDesktopOffset
-          ? options.getDesktopOffset()
-          : viewport.scrollLeft;
+        pointerStartOffset = viewport.scrollLeft;
 
         viewport.setPointerCapture(event.pointerId);
         event.preventDefault();
@@ -159,12 +160,7 @@ export function HomePageClient() {
 
         const deltaX = event.clientX - pointerStartX;
         const nextOffset = pointerStartOffset - deltaX;
-
-        if (options?.setDesktopOffset) {
-          options.setDesktopOffset(nextOffset);
-        } else {
-          viewport.scrollLeft = nextOffset;
-        }
+        viewport.scrollLeft = nextOffset;
 
         event.preventDefault();
       };
@@ -203,39 +199,16 @@ export function HomePageClient() {
       });
     };
 
-    if (dailyViewport && dailyTrack) {
-      bindHorizontalViewport(dailyViewport, {
-        getDesktopOffset: () =>
-          Math.abs(Number(gsap.getProperty(dailyTrack, "x")) || 0),
-        setDesktopOffset: (nextOffset: number) => {
-          if (!dailyDesktopTrigger) {
-            return;
-          }
-
-          const distance = getDailyDesktopDistance();
-
-          if (!distance) {
-            return;
-          }
-
-          const clampedOffset = gsap.utils.clamp(0, distance, nextOffset);
-          const span = dailyDesktopTrigger.end - dailyDesktopTrigger.start;
-          const progress = clampedOffset / distance;
-          const targetY = dailyDesktopTrigger.start + span * progress;
-
-          window.scrollTo({
-            top: targetY,
-            left: window.scrollX,
-            behavior: "auto",
-          });
-
-          ScrollTrigger.update();
-        },
+    if (dailyViewport) {
+      bindNativeHorizontalViewport(dailyViewport, {
+        enableDesktopPointer: false,
       });
     }
 
     if (seasonalViewport) {
-      bindHorizontalViewport(seasonalViewport);
+      bindNativeHorizontalViewport(seasonalViewport, {
+        enableDesktopPointer: true,
+      });
     }
 
     const context = gsap.context(() => {
@@ -560,34 +533,29 @@ export function HomePageClient() {
           },
         });
 
-        gsap.fromTo(
-          "[data-daily-shell]",
-          {
-            y: 58,
-            scale: 0.985,
-            clipPath: "inset(18% 0% 0% 0% round 2.6rem)",
-          },
-          {
-            y: 0,
-            scale: 1,
-            clipPath: "inset(0% 0% 0% 0% round 2.6rem)",
-            ease: "none",
-            scrollTrigger: {
-              trigger: "[data-theme-section='daily']",
-              start: "top 92%",
-              end: "top 24%",
-              scrub: 0.95,
-            },
-          },
-        );
-
-        const dailyScene = root.querySelector<HTMLElement>("[data-daily-scene]");
-
         if (dailyScene && dailyViewport && dailyTrack) {
           const getDistance = () =>
             Math.max(0, dailyTrack.scrollWidth - dailyViewport.clientWidth);
-          const getScrollSpan = () =>
-            Math.max(window.innerHeight * 0.85, getDistance() * 0.5);
+
+          const syncSceneOffset = (nextOffset: number) => {
+            if (!dailyDesktopTrigger) {
+              return;
+            }
+
+            const distance = getDailyDesktopDistance();
+
+            if (!distance) {
+              return;
+            }
+
+            const clampedOffset = gsap.utils.clamp(0, distance, nextOffset);
+            const span = dailyDesktopTrigger.end - dailyDesktopTrigger.start;
+            const progress = clampedOffset / distance;
+            const targetY = dailyDesktopTrigger.start + span * progress;
+
+            setWindowScroll(targetY);
+            ScrollTrigger.update();
+          };
 
           getDailyDesktopDistance = getDistance;
 
@@ -598,8 +566,8 @@ export function HomePageClient() {
               scrollTrigger: {
                 trigger: dailyScene,
                 start: "top top+=96",
-                end: () => `+=${getScrollSpan()}`,
-                scrub: 0.95,
+                end: () => `+=${getDistance()}`,
+                scrub: true,
                 pin: dailyScene,
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
@@ -607,12 +575,36 @@ export function HomePageClient() {
             });
 
             dailyDesktopTrigger = animation.scrollTrigger ?? null;
-          }
 
-          return () => {
-            dailyDesktopTrigger = null;
-            getDailyDesktopDistance = () => 0;
-          };
+            const dragProxy = document.createElement("div");
+            let dragStartOffset = 0;
+
+            const draggable = Draggable.create(dragProxy, {
+              trigger: dailyViewport,
+              type: "x",
+              zIndexBoost: false,
+              allowContextMenu: true,
+              onPress() {
+                dragStartOffset = Math.abs(
+                  Number(gsap.getProperty(dailyTrack, "x")) || 0,
+                );
+                dailyViewport.style.cursor = "grabbing";
+                gsap.set(dragProxy, { x: 0 });
+              },
+              onDrag() {
+                syncSceneOffset(dragStartOffset - this.x);
+              },
+              onRelease() {
+                dailyViewport.style.cursor = "";
+              },
+            })[0];
+
+            return () => {
+              draggable.kill();
+              dailyDesktopTrigger = null;
+              getDailyDesktopDistance = () => 0;
+            };
+          }
         }
       });
     }, root);
@@ -1004,13 +996,13 @@ export function HomePageClient() {
 
             <div
               data-daily-scene
-              className="relative overflow-hidden rounded-[2.1rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.5)] px-0 py-0 lg:min-h-[33rem]"
+              className="relative overflow-hidden rounded-[2.1rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.5)] px-0 py-0 lg:cursor-grab lg:min-h-[33rem] lg:active:cursor-grabbing"
             >
               <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-16 bg-[linear-gradient(90deg,rgba(255,247,239,0.94),rgba(255,247,239,0))] lg:block" />
               <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-24 bg-[linear-gradient(270deg,rgba(255,247,239,0.96),rgba(255,247,239,0))] lg:block" />
               <div
                 data-daily-viewport
-                className="snap-x snap-mandatory touch-pan-x overscroll-x-contain select-none overflow-x-auto px-5 py-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:px-6 lg:h-full lg:cursor-grab lg:overflow-hidden lg:px-8 lg:py-8 lg:touch-auto lg:active:cursor-grabbing"
+                className="snap-x snap-mandatory touch-pan-x overscroll-x-contain select-none overflow-x-auto px-5 py-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:px-6 lg:h-full lg:snap-none lg:overflow-hidden lg:px-8 lg:py-8 lg:touch-auto"
               >
                 <div
                   data-daily-track
