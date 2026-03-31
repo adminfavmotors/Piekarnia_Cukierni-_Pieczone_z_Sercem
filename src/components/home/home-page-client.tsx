@@ -68,6 +68,63 @@ export function HomePageClient() {
     };
 
     const desktopMedia = gsap.matchMedia();
+    const dailyViewport = root.querySelector<HTMLElement>("[data-daily-viewport]");
+
+    let removeDailyTouchHandlers = () => {};
+
+    if (dailyViewport) {
+      let startX = 0;
+      let startY = 0;
+      let startScrollLeft = 0;
+      let horizontalLock = false;
+
+      const onTouchStart = (event: TouchEvent) => {
+        if (window.innerWidth >= 1024 || event.touches.length !== 1) {
+          return;
+        }
+
+        const touch = event.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        startScrollLeft = dailyViewport.scrollLeft;
+        horizontalLock = false;
+      };
+
+      const onTouchMove = (event: TouchEvent) => {
+        if (window.innerWidth >= 1024 || event.touches.length !== 1) {
+          return;
+        }
+
+        const touch = event.touches[0];
+        const deltaX = touch.clientX - startX;
+        const deltaY = touch.clientY - startY;
+
+        if (!horizontalLock) {
+          if (Math.abs(deltaX) > Math.abs(deltaY) + 8) {
+            horizontalLock = true;
+          } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
+            return;
+          }
+        }
+
+        if (horizontalLock) {
+          event.preventDefault();
+          dailyViewport.scrollLeft = startScrollLeft - deltaX;
+        }
+      };
+
+      dailyViewport.addEventListener("touchstart", onTouchStart, {
+        passive: true,
+      });
+      dailyViewport.addEventListener("touchmove", onTouchMove, {
+        passive: false,
+      });
+
+      removeDailyTouchHandlers = () => {
+        dailyViewport.removeEventListener("touchstart", onTouchStart);
+        dailyViewport.removeEventListener("touchmove", onTouchMove);
+      };
+    }
 
     const context = gsap.context(() => {
       const themeSections = gsap.utils.toArray<HTMLElement>(
@@ -423,6 +480,8 @@ export function HomePageClient() {
         if (dailyCarousel && dailyViewport && dailyTrack) {
           const getDistance = () =>
             Math.max(0, dailyTrack.scrollWidth - dailyViewport.clientWidth);
+          const getScrollSpan = () =>
+            Math.max(window.innerHeight * 0.95, getDistance() * 0.58);
 
           if (getDistance() > 0) {
             gsap.to(dailyTrack, {
@@ -430,8 +489,8 @@ export function HomePageClient() {
               ease: "none",
               scrollTrigger: {
                 trigger: dailyCarousel,
-                start: "top top+=112",
-                end: () => `+=${getDistance() + window.innerHeight * 0.25}`,
+                start: "top top+=96",
+                end: () => `+=${getScrollSpan()}`,
                 scrub: 0.95,
                 pin: true,
                 anticipatePin: 1,
@@ -445,6 +504,7 @@ export function HomePageClient() {
 
     return () => {
       delete document.body.dataset.theme;
+      removeDailyTouchHandlers();
       desktopMedia.revert();
       context.revert();
     };
@@ -819,16 +879,16 @@ export function HomePageClient() {
             <div data-daily-carousel className="grid gap-6">
               <div
                 data-daily-viewport
-                className="snap-x snap-mandatory overflow-x-auto pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden lg:overflow-hidden lg:pb-0"
+                className="snap-x snap-mandatory touch-pan-x overscroll-x-contain overflow-x-auto pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden lg:overflow-hidden lg:pb-0 lg:touch-auto"
               >
                 <div
                   data-daily-track
                   data-stagger-group
-                  className="flex w-max gap-4 lg:gap-6"
+                  className="flex w-max gap-4 pr-4 sm:pr-6 lg:gap-5 lg:pr-[10vw]"
                 >
                   <div
                     data-stagger-item
-                    className="w-[84vw] max-w-[24rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.9)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[26rem] lg:w-[29rem]"
+                    className="w-[82vw] max-w-[21rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.9)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[22rem] lg:w-[23rem]"
                   >
                     <SectionHeading
                       eyebrow="Dzisiejsza tablica"
@@ -852,8 +912,8 @@ export function HomePageClient() {
                     <div
                       key={bake.name}
                       data-stagger-item
-                      className={`w-[84vw] shrink-0 snap-start sm:w-[26rem] lg:w-[30rem] ${
-                        index === 0 ? "lg:w-[38rem]" : ""
+                      className={`w-[82vw] shrink-0 snap-start sm:w-[22rem] lg:w-[23rem] ${
+                        index === 0 ? "lg:w-[31rem]" : ""
                       }`}
                     >
                       <BakeCard bake={bake} featured={index === 0} />
@@ -862,7 +922,7 @@ export function HomePageClient() {
 
                   <div
                     data-stagger-item
-                    className="w-[84vw] max-w-[24rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.8)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[28rem] lg:w-[32rem]"
+                    className="w-[82vw] max-w-[22rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.8)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[23rem] lg:w-[25rem]"
                   >
                     <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-accent)]">
                       Sezonowość
