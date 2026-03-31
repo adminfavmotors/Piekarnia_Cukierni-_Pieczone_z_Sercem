@@ -1,4 +1,4 @@
-export type DailyBake = {
+﻿export type DailyBake = {
   name: string;
   description: string;
   category: string;
@@ -13,9 +13,9 @@ export const siteData = {
   hours: "Poniedziałek-sobota, 8:00-16:00",
   hero: {
     eyebrow: "Lokalna piekarnia z Krakowa",
-    title: "Domowe wypieki, do których chce się wracać",
+    title: "Tu naprawdę jest pysznie.",
     description:
-      "Świeży chleb, croissanty, cynamonki i słodkie wypieki przygotowywane z prostych składników, serdeczności i wyczucia smaku.",
+      "Świeży chleb, maślane croissanty i słodkie wypieki przygotowywane codziennie, po domowemu i z sercem.",
     primaryCta: "Co dziś pieczemy",
     secondaryCta: "Odwiedź nas",
   },
