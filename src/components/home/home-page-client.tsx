@@ -47,6 +47,8 @@ const ingredientNotes = [
   "Sezonowe dodatki pojawiają się wtedy, kiedy naprawdę smakują najlepiej.",
 ] as const;
 
+const seasonLabels = ["Wiosna", "Lato", "Jesień", "Zima"] as const;
+
 gsap.registerPlugin(ScrollTrigger);
 
 export function HomePageClient() {
@@ -70,13 +72,22 @@ export function HomePageClient() {
     const desktopMedia = gsap.matchMedia();
     const dailyViewport = root.querySelector<HTMLElement>("[data-daily-viewport]");
     const dailyTrack = root.querySelector<HTMLElement>("[data-daily-track]");
+    const seasonalViewport = root.querySelector<HTMLElement>(
+      "[data-seasonal-viewport]",
+    );
 
     let dailyDesktopTrigger: ScrollTrigger | null = null;
     let getDailyDesktopDistance = () => 0;
 
-    let removeDailyTouchHandlers = () => {};
+    const interactionCleanups: Array<() => void> = [];
 
-    if (dailyViewport && dailyTrack) {
+    const bindHorizontalViewport = (
+      viewport: HTMLElement,
+      options?: {
+        getDesktopOffset?: () => number;
+        setDesktopOffset?: (nextOffset: number) => void;
+      },
+    ) => {
       let startX = 0;
       let startY = 0;
       let startScrollLeft = 0;
@@ -94,7 +105,7 @@ export function HomePageClient() {
         const touch = event.touches[0];
         startX = touch.clientX;
         startY = touch.clientY;
-        startScrollLeft = dailyViewport.scrollLeft;
+        startScrollLeft = viewport.scrollLeft;
         horizontalLock = false;
       };
 
@@ -117,33 +128,8 @@ export function HomePageClient() {
 
         if (horizontalLock) {
           event.preventDefault();
-          dailyViewport.scrollLeft = startScrollLeft - deltaX;
+          viewport.scrollLeft = startScrollLeft - deltaX;
         }
-      };
-
-      const syncDesktopScene = (nextOffset: number) => {
-        if (!dailyDesktopTrigger) {
-          return;
-        }
-
-        const distance = getDailyDesktopDistance();
-
-        if (!distance) {
-          return;
-        }
-
-        const clampedOffset = gsap.utils.clamp(0, distance, nextOffset);
-        const span = dailyDesktopTrigger.end - dailyDesktopTrigger.start;
-        const progress = clampedOffset / distance;
-        const targetY = dailyDesktopTrigger.start + span * progress;
-
-        window.scrollTo({
-          top: targetY,
-          left: window.scrollX,
-          behavior: "auto",
-        });
-
-        ScrollTrigger.update();
       };
 
       const onPointerDown = (event: PointerEvent) => {
@@ -151,18 +137,14 @@ export function HomePageClient() {
           return;
         }
 
-        if (!dailyDesktopTrigger) {
-          return;
-        }
-
         isPointerDragging = true;
         activePointerId = event.pointerId;
         pointerStartX = event.clientX;
-        pointerStartOffset = Math.abs(
-          Number(gsap.getProperty(dailyTrack, "x")) || 0,
-        );
+        pointerStartOffset = options?.getDesktopOffset
+          ? options.getDesktopOffset()
+          : viewport.scrollLeft;
 
-        dailyViewport.setPointerCapture(event.pointerId);
+        viewport.setPointerCapture(event.pointerId);
         event.preventDefault();
       };
 
@@ -176,7 +158,14 @@ export function HomePageClient() {
         }
 
         const deltaX = event.clientX - pointerStartX;
-        syncDesktopScene(pointerStartOffset - deltaX);
+        const nextOffset = pointerStartOffset - deltaX;
+
+        if (options?.setDesktopOffset) {
+          options.setDesktopOffset(nextOffset);
+        } else {
+          viewport.scrollLeft = nextOffset;
+        }
+
         event.preventDefault();
       };
 
@@ -188,30 +177,65 @@ export function HomePageClient() {
         isPointerDragging = false;
         activePointerId = null;
 
-        if (dailyViewport.hasPointerCapture(event.pointerId)) {
-          dailyViewport.releasePointerCapture(event.pointerId);
+        if (viewport.hasPointerCapture(event.pointerId)) {
+          viewport.releasePointerCapture(event.pointerId);
         }
       };
 
-      dailyViewport.addEventListener("touchstart", onTouchStart, {
+      viewport.addEventListener("touchstart", onTouchStart, {
         passive: true,
       });
-      dailyViewport.addEventListener("touchmove", onTouchMove, {
+      viewport.addEventListener("touchmove", onTouchMove, {
         passive: false,
       });
-      dailyViewport.addEventListener("pointerdown", onPointerDown);
-      dailyViewport.addEventListener("pointermove", onPointerMove);
-      dailyViewport.addEventListener("pointerup", stopPointerDrag);
-      dailyViewport.addEventListener("pointercancel", stopPointerDrag);
+      viewport.addEventListener("pointerdown", onPointerDown);
+      viewport.addEventListener("pointermove", onPointerMove);
+      viewport.addEventListener("pointerup", stopPointerDrag);
+      viewport.addEventListener("pointercancel", stopPointerDrag);
 
-      removeDailyTouchHandlers = () => {
-        dailyViewport.removeEventListener("touchstart", onTouchStart);
-        dailyViewport.removeEventListener("touchmove", onTouchMove);
-        dailyViewport.removeEventListener("pointerdown", onPointerDown);
-        dailyViewport.removeEventListener("pointermove", onPointerMove);
-        dailyViewport.removeEventListener("pointerup", stopPointerDrag);
-        dailyViewport.removeEventListener("pointercancel", stopPointerDrag);
-      };
+      interactionCleanups.push(() => {
+        viewport.removeEventListener("touchstart", onTouchStart);
+        viewport.removeEventListener("touchmove", onTouchMove);
+        viewport.removeEventListener("pointerdown", onPointerDown);
+        viewport.removeEventListener("pointermove", onPointerMove);
+        viewport.removeEventListener("pointerup", stopPointerDrag);
+        viewport.removeEventListener("pointercancel", stopPointerDrag);
+      });
+    };
+
+    if (dailyViewport && dailyTrack) {
+      bindHorizontalViewport(dailyViewport, {
+        getDesktopOffset: () =>
+          Math.abs(Number(gsap.getProperty(dailyTrack, "x")) || 0),
+        setDesktopOffset: (nextOffset: number) => {
+          if (!dailyDesktopTrigger) {
+            return;
+          }
+
+          const distance = getDailyDesktopDistance();
+
+          if (!distance) {
+            return;
+          }
+
+          const clampedOffset = gsap.utils.clamp(0, distance, nextOffset);
+          const span = dailyDesktopTrigger.end - dailyDesktopTrigger.start;
+          const progress = clampedOffset / distance;
+          const targetY = dailyDesktopTrigger.start + span * progress;
+
+          window.scrollTo({
+            top: targetY,
+            left: window.scrollX,
+            behavior: "auto",
+          });
+
+          ScrollTrigger.update();
+        },
+      });
+    }
+
+    if (seasonalViewport) {
+      bindHorizontalViewport(seasonalViewport);
     }
 
     const context = gsap.context(() => {
@@ -557,12 +581,9 @@ export function HomePageClient() {
           },
         );
 
-        const dailySection = root.querySelector<HTMLElement>(
-          "[data-theme-section='daily']",
-        );
-        const dailyShell = root.querySelector<HTMLElement>("[data-daily-shell]");
+        const dailyScene = root.querySelector<HTMLElement>("[data-daily-scene]");
 
-        if (dailySection && dailyShell && dailyViewport && dailyTrack) {
+        if (dailyScene && dailyViewport && dailyTrack) {
           const getDistance = () =>
             Math.max(0, dailyTrack.scrollWidth - dailyViewport.clientWidth);
           const getScrollSpan = () =>
@@ -575,11 +596,11 @@ export function HomePageClient() {
               x: () => -getDistance(),
               ease: "none",
               scrollTrigger: {
-                trigger: dailySection,
+                trigger: dailyScene,
                 start: "top top+=96",
                 end: () => `+=${getScrollSpan()}`,
                 scrub: 0.95,
-                pin: dailyShell,
+                pin: dailyScene,
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
               },
@@ -598,7 +619,7 @@ export function HomePageClient() {
 
     return () => {
       delete document.body.dataset.theme;
-      removeDailyTouchHandlers();
+      interactionCleanups.forEach((cleanup) => cleanup());
       desktopMedia.revert();
       context.revert();
     };
@@ -966,72 +987,82 @@ export function HomePageClient() {
                 Codzienna tablica wypieków pokazuje, co dziś trafia do pieca i na ladę.
               </p>
               <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--color-brown-soft)] sm:text-lg">
-                Zamiast rozstrzelonego układu jest jeden płynny moduł: wprowadzenie, wypieki dnia i sezonowość w tym samym rytmie przewijania.
+                Najpierw pokazujemy to, co dziś trafia na ladę, a niżej osobno zbieramy sezonowe smaki i powroty, na które warto czekać.
               </p>
             </div>
 
-            <div data-daily-carousel className="grid gap-6">
+            <div className="flex flex-wrap gap-2">
+              {siteData.categories.map((category) => (
+                <span
+                  key={category}
+                  className="inline-flex rounded-full border border-[rgba(79,45,30,0.12)] bg-white/76 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brown-soft)]"
+                >
+                  {category}
+                </span>
+              ))}
+            </div>
+
+            <div
+              data-daily-scene
+              className="relative overflow-hidden rounded-[2.1rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.5)] px-0 py-0 lg:min-h-[33rem]"
+            >
+              <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-16 bg-[linear-gradient(90deg,rgba(255,247,239,0.94),rgba(255,247,239,0))] lg:block" />
+              <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-24 bg-[linear-gradient(270deg,rgba(255,247,239,0.96),rgba(255,247,239,0))] lg:block" />
               <div
                 data-daily-viewport
-                className="snap-x snap-mandatory touch-pan-x overscroll-x-contain select-none overflow-x-auto pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden lg:cursor-grab lg:overflow-hidden lg:pb-0 lg:touch-auto lg:active:cursor-grabbing"
+                className="snap-x snap-mandatory touch-pan-x overscroll-x-contain select-none overflow-x-auto px-5 py-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:px-6 lg:h-full lg:cursor-grab lg:overflow-hidden lg:px-8 lg:py-8 lg:touch-auto lg:active:cursor-grabbing"
               >
                 <div
                   data-daily-track
                   data-stagger-group
                   className="flex w-max gap-4 pr-4 sm:pr-6 lg:gap-5 lg:pr-[10vw]"
                 >
-                  <div
-                    data-stagger-item
-                    className="w-[82vw] max-w-[21rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.9)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[22rem] lg:w-[23rem]"
-                  >
-                    <SectionHeading
-                      eyebrow="Dzisiejsza tablica"
-                      title="Sprawdź, co dziś czeka na Ciebie w piekarni."
-                      description="To nie jest sklep online, tylko prosta tablica dnia: ulubione wypieki, sezonowe akcenty i szybki sygnał, co znika najchętniej."
-                    />
-
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      {siteData.categories.map((category) => (
-                        <span
-                          key={category}
-                          className="inline-flex rounded-full border border-[rgba(79,45,30,0.12)] bg-white/76 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brown-soft)]"
-                        >
-                          {category}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
                   {siteData.dailyBakes.map((bake, index) => (
                     <div
                       key={bake.name}
                       data-stagger-item
-                      className={`w-[82vw] shrink-0 snap-start sm:w-[22rem] lg:w-[23rem] ${
+                      className={`w-[84vw] shrink-0 snap-start sm:w-[22rem] lg:w-[23rem] ${
                         index === 0 ? "lg:w-[31rem]" : ""
                       }`}
                     >
                       <BakeCard bake={bake} featured={index === 0} />
                     </div>
                   ))}
+                </div>
+              </div>
+            </div>
 
-                  <div
-                    data-stagger-item
-                    className="w-[82vw] max-w-[22rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.8)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[23rem] lg:w-[25rem]"
-                  >
-                    <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-accent)]">
-                      Sezonowość
-                    </p>
-                    <div className="mt-5 grid gap-3">
-                      {siteData.seasonalMoments.map((item) => (
-                        <div
-                          key={item}
-                          className="rounded-[1.25rem] border border-[rgba(79,45,30,0.08)] bg-white/72 px-4 py-4 text-sm leading-6 text-[var(--color-brown-soft)]"
-                        >
-                          {item}
-                        </div>
-                      ))}
+            <div className="grid gap-5 pt-2">
+              <div className="max-w-[38rem]">
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-accent)]">
+                  Sezonowość
+                </p>
+                <p className="mt-3 font-display text-[2rem] leading-[0.96] tracking-[-0.04em] text-[var(--color-brown-deep)] sm:text-[2.5rem]">
+                  Sezonowe smaki dostają własny rytm i własną karuzelę.
+                </p>
+              </div>
+
+              <div
+                data-seasonal-viewport
+                className="snap-x snap-mandatory touch-pan-x overscroll-x-contain select-none overflow-x-auto pb-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden lg:cursor-grab lg:pb-1 lg:active:cursor-grabbing"
+              >
+                <div className="flex w-max gap-4 pr-4 sm:pr-6">
+                  {siteData.seasonalMoments.map((item, index) => (
+                    <div
+                      key={item}
+                      className="w-[82vw] max-w-[21rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.82)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[22rem] lg:w-[24rem]"
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
+                        {seasonLabels[index] ?? "Sezon"}
+                      </p>
+                      <p className="mt-4 font-display text-[2rem] leading-none tracking-[-0.04em] text-[var(--color-brown-deep)]">
+                        {seasonLabels[index] ?? "Sezon"}
+                      </p>
+                      <p className="mt-4 text-sm leading-6 text-[var(--color-brown-soft)]">
+                        {item}
+                      </p>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
