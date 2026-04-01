@@ -35,3 +35,4 @@ Thumbs.db
 
 # reference screenshots
 *.png
+!public/**/*.png
