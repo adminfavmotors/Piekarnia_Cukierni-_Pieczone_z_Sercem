@@ -10,6 +10,7 @@ import {
   Wheat,
 } from "lucide-react";
 
+import { ActionLink, Pill } from "@/components/home/home-ui";
 import {
   SceneCallout,
   ScenePanel,
@@ -126,18 +127,12 @@ export function HeroScene() {
                 data-hero-actions
                 className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
               >
-                <a
-                  href="#co-dzis-pieczemy"
-                  className="inline-flex items-center justify-center rounded-full bg-[var(--color-accent)] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_42px_rgba(233,79,60,0.26)] transition-transform duration-300 hover:-translate-y-0.5"
-                >
+                <ActionLink href="#co-dzis-pieczemy">
                   {siteData.hero.primaryCta}
-                </a>
-                <a
-                  href="#kontakt"
-                  className="inline-flex items-center justify-center rounded-full border border-[rgba(255,248,241,0.22)] bg-[rgba(255,248,241,0.08)] px-6 py-3.5 text-sm font-semibold text-[var(--color-cream-light)] transition-colors duration-300 hover:border-[rgba(255,248,241,0.38)] hover:bg-[rgba(255,248,241,0.14)]"
-                >
+                </ActionLink>
+                <ActionLink href="#kontakt" variant="secondary">
                   {siteData.hero.secondaryCta}
-                </a>
+                </ActionLink>
               </div>
             </div>
 
@@ -180,12 +175,9 @@ export function HeroScene() {
                 </SectionKicker>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {siteData.dailyBakes.slice(0, 3).map((bake) => (
-                    <span
-                      key={bake.name}
-                      className="inline-flex rounded-full bg-[rgba(255,248,241,0.14)] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[var(--color-cream-light)]"
-                    >
+                    <Pill key={bake.name} tone="darkGlass">
                       {bake.category}
-                    </span>
+                    </Pill>
                   ))}
                 </div>
                 <p className="mt-4 text-sm leading-6 text-[rgba(255,248,241,0.82)]">
@@ -196,12 +188,13 @@ export function HeroScene() {
           </div>
 
           <div className="relative z-10 flex items-end justify-between gap-4">
-            <div
+            <Pill
+              tone="darkGlass"
+              className="max-w-[14rem] border border-[rgba(255,248,241,0.18)] bg-[rgba(255,248,241,0.1)] px-4 py-2 text-[0.68rem] tracking-[0.18em] backdrop-blur-md sm:max-w-[18rem] sm:text-[0.72rem]"
               data-hero-detail-card
-              className="max-w-[14rem] rounded-full border border-[rgba(255,248,241,0.18)] bg-[rgba(255,248,241,0.1)] px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-cream-light)] backdrop-blur-md sm:max-w-[18rem] sm:text-[0.72rem]"
             >
               świeżo z pieca
-            </div>
+            </Pill>
             <div
               data-hero-scroll-note
               className="text-right text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[rgba(255,248,241,0.68)] sm:text-[0.72rem] sm:tracking-[0.24em]"

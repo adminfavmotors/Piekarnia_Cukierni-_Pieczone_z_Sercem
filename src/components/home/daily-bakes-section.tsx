@@ -1,4 +1,5 @@
 import { BakeCard } from "@/components/home/bake-card";
+import { Pill } from "@/components/home/home-ui";
 import {
   SceneCallout,
   ScenePanel,
@@ -39,12 +40,7 @@ export function DailyBakesSection() {
 
           <div className="flex flex-wrap gap-2">
             {siteData.categories.map((category) => (
-              <span
-                key={category}
-                className="inline-flex rounded-full border border-[rgba(79,45,30,0.12)] bg-white/76 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-brown-soft)]"
-              >
-                {category}
-              </span>
+              <Pill key={category}>{category}</Pill>
             ))}
           </div>
 
