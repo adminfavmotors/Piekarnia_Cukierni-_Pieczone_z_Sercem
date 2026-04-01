@@ -10,6 +10,10 @@ import {
   Wheat,
 } from "lucide-react";
 
+import {
+  SceneCallout,
+  ScenePanel,
+} from "@/components/home/scene-primitives";
 import { SectionHeading } from "@/components/home/section-heading";
 import { siteData } from "@/data/site";
 
@@ -203,10 +207,10 @@ export function TasteScene() {
       className="relative z-20 -mt-10 px-4 pb-16 pt-0 sm:-mt-14 sm:px-6 sm:pb-20 lg:-mt-[28svh] lg:pb-28 lg:px-10"
     >
       <div className="mx-auto max-w-[92rem]">
-        <div
+        <ScenePanel
           data-reveal
           data-scene-panel="taste"
-          className="relative overflow-hidden rounded-[2.4rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.92)] px-5 pb-8 pt-8 shadow-[0_40px_120px_rgba(79,45,30,0.14)] backdrop-blur-sm sm:px-8 sm:pb-10 sm:pt-10 lg:grid lg:grid-cols-[0.5fr_0.5fr] lg:items-end lg:gap-8 lg:px-10 lg:pb-12 lg:pt-12"
+          className="lg:grid lg:grid-cols-[0.5fr_0.5fr] lg:items-end lg:gap-8"
         >
           <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_14%_18%,rgba(233,79,60,0.12),transparent_26%),radial-gradient(circle_at_82%_18%,rgba(235,171,163,0.24),transparent_22%)]" />
           <div className="relative space-y-8 lg:max-w-[32rem]">
@@ -218,10 +222,11 @@ export function TasteScene() {
 
             <div data-stagger-group className="grid gap-4">
               {scenePillars.map(({ icon: Icon, label, title, description }) => (
-                <div
+                <SceneCallout
                   key={label}
                   data-stagger-item
-                  className="rounded-[1.6rem] border border-[rgba(79,45,30,0.08)] bg-white/72 px-5 py-5 shadow-[0_18px_40px_rgba(79,45,30,0.06)]"
+                  tone="warm"
+                  className="rounded-[1.6rem]"
                 >
                   <div className="flex items-start gap-4">
                     <div className="rounded-full bg-[rgba(233,79,60,0.12)] p-3 text-[var(--color-accent)]">
@@ -239,7 +244,7 @@ export function TasteScene() {
                       </p>
                     </div>
                   </div>
-                </div>
+                </SceneCallout>
               ))}
             </div>
           </div>
@@ -255,16 +260,16 @@ export function TasteScene() {
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(46,26,18,0.02),rgba(46,26,18,0.24))]" />
             </div>
-            <div className="absolute -bottom-8 left-0 hidden max-w-[18rem] rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.92)] p-5 shadow-[0_20px_60px_rgba(79,45,30,0.12)] sm:left-8 lg:block">
+            <SceneCallout className="absolute -bottom-8 left-0 hidden max-w-[18rem] sm:left-8 lg:block">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
                 Od rana pachnie piecem
               </p>
               <p className="mt-3 text-sm leading-6 text-[var(--color-brown-soft)]">
                 Najmocniej działa prosty widok: świeża blacha, miękki środek i złoty wierzch.
               </p>
-            </div>
+            </SceneCallout>
           </div>
-        </div>
+        </ScenePanel>
       </div>
       <div
         data-ingredients-floor
@@ -281,10 +286,11 @@ export function IngredientsScene() {
       className="relative z-30 -mt-8 px-4 pb-16 pt-0 sm:-mt-12 sm:px-6 sm:pb-20 lg:-mt-[22svh] lg:pb-28 lg:px-10"
     >
       <div className="mx-auto max-w-[92rem]">
-        <div
+        <ScenePanel
           data-reveal
           data-scene-panel="ingredients"
-          className="relative overflow-hidden rounded-[2.4rem] border border-[rgba(79,45,30,0.08)] bg-[linear-gradient(180deg,#fff8f1_0%,#f9ebdd_100%)] px-5 pb-8 pt-8 shadow-[0_40px_120px_rgba(79,45,30,0.12)] sm:px-8 sm:pb-10 sm:pt-10 lg:grid lg:grid-cols-[0.44fr_0.56fr] lg:items-center lg:gap-8 lg:px-10 lg:pb-12 lg:pt-12"
+          tone="cream"
+          className="lg:grid lg:grid-cols-[0.44fr_0.56fr] lg:items-center lg:gap-8"
         >
           <div className="absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_18%_16%,rgba(233,79,60,0.1),transparent_24%),radial-gradient(circle_at_84%_16%,rgba(255,248,241,0.92),transparent_18%)]" />
           <div
@@ -300,14 +306,14 @@ export function IngredientsScene() {
                 sizes="(max-width: 1024px) 100vw, 38vw"
               />
             </div>
-            <div className="absolute -bottom-8 right-0 hidden max-w-[17rem] rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.92)] p-5 shadow-[0_20px_60px_rgba(79,45,30,0.12)] sm:right-8 lg:block">
+            <SceneCallout className="absolute -bottom-8 right-0 hidden max-w-[17rem] sm:right-8 lg:block">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
                 Prosty skład
               </p>
               <p className="mt-3 text-sm leading-6 text-[var(--color-brown-soft)]">
                 Dobre wypieki zaczynają się od mąki, masła, owoców i codziennej dbałości o jakość.
               </p>
-            </div>
+            </SceneCallout>
           </div>
 
           <div className="relative order-1 space-y-8 lg:order-2 lg:pl-10">
@@ -319,9 +325,10 @@ export function IngredientsScene() {
 
             <div data-stagger-group className="grid gap-4 sm:grid-cols-2">
               {ingredientNotes.map((note, index) => (
-                <div
+                <SceneCallout
                   key={note}
                   data-stagger-item
+                  tone="light"
                   className={`rounded-[1.6rem] px-5 py-5 shadow-[0_18px_48px_rgba(79,45,30,0.07)] ${
                     index === 0
                       ? "bg-white/78 sm:col-span-2"
@@ -333,11 +340,11 @@ export function IngredientsScene() {
                   <p className="text-sm leading-6 text-[var(--color-brown-soft)]">
                     {note}
                   </p>
-                </div>
+                </SceneCallout>
               ))}
             </div>
           </div>
-        </div>
+        </ScenePanel>
       </div>
       <div
         data-heart-floor
@@ -354,10 +361,11 @@ export function HeartScene() {
       className="relative z-40 -mt-8 px-4 pb-16 pt-0 text-[var(--color-cream-light)] sm:-mt-12 sm:px-6 sm:pb-20 lg:-mt-[22svh] lg:pb-28 lg:px-10"
     >
       <div className="mx-auto max-w-[92rem]">
-        <div
+        <ScenePanel
           data-reveal
           data-scene-panel="heart"
-          className="relative overflow-hidden rounded-[2.5rem] border border-[rgba(255,248,241,0.08)] bg-[linear-gradient(135deg,rgba(79,45,30,0.98),rgba(46,26,18,1))] px-5 pb-10 pt-10 shadow-[0_44px_130px_rgba(20,8,5,0.32)] sm:px-8 sm:pb-12 sm:pt-12 lg:grid lg:grid-cols-[0.6fr_0.4fr] lg:items-end lg:gap-8 lg:px-10 lg:pb-14 lg:pt-14"
+          tone="dark"
+          className="rounded-[2.5rem] pb-10 pt-10 sm:pb-12 sm:pt-12 lg:grid lg:grid-cols-[0.6fr_0.4fr] lg:items-end lg:gap-8 lg:pb-14 lg:pt-14"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(233,79,60,0.24),transparent_24%),radial-gradient(circle_at_20%_80%,rgba(235,171,163,0.14),transparent_30%)]" />
           <div className="relative space-y-6 lg:max-w-[44rem]">
@@ -383,16 +391,19 @@ export function HeartScene() {
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(46,26,18,0.08),rgba(46,26,18,0.28))]" />
             </div>
-            <div className="absolute -bottom-8 left-0 hidden max-w-[17rem] rounded-[1.8rem] border border-[rgba(255,248,241,0.1)] bg-[rgba(255,248,241,0.1)] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.18)] backdrop-blur-md sm:left-6 lg:block">
+            <SceneCallout
+              tone="glass"
+              className="absolute -bottom-8 left-0 hidden max-w-[17rem] sm:left-6 lg:block"
+            >
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[rgba(255,248,241,0.76)]">
                 Domowy rytm
               </p>
               <p className="mt-3 text-sm leading-6 text-[rgba(255,248,241,0.82)]">
                 Tu liczy się nie tylko smak. Liczy się też ciepło miejsca i zwykła ludzka życzliwość.
               </p>
-            </div>
+            </SceneCallout>
           </div>
-        </div>
+        </ScenePanel>
       </div>
       <div
         data-daily-floor

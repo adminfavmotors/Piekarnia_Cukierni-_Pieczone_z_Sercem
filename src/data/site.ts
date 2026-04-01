@@ -19,23 +19,6 @@ export const siteData = {
     primaryCta: "Co dziś pieczemy",
     secondaryCta: "Odwiedź nas",
   },
-  pillars: [
-    {
-      title: "Smak, który mówi sam za siebie",
-      description:
-        "Stawiamy na wypieki, które są po prostu pyszne: świeże, pachnące i przygotowane tak, żeby chciało się po nie wracać.",
-    },
-    {
-      title: "Naturalne składniki",
-      description:
-        "Wierzymy w proste, uczciwe podejście. Dobre wypieki zaczynają się od dobrych podstaw i codziennej dbałości o jakość.",
-    },
-    {
-      title: "Wypiekane z sercem",
-      description:
-        "Za nazwą stoi prawdziwa troska o smak, atmosferę i ludzi, którzy wpadają po coś dobrego na swój dzień.",
-    },
-  ],
   dailyBakes: [
     {
       name: "Chleb pszenny na zakwasie",

@@ -1,4 +1,8 @@
 import { BakeCard } from "@/components/home/bake-card";
+import {
+  SceneCallout,
+  ScenePanel,
+} from "@/components/home/scene-primitives";
 import { siteData } from "@/data/site";
 
 const seasonLabels = ["Wiosna", "Lato", "Jesień", "Zima"] as const;
@@ -10,9 +14,10 @@ export function DailyBakesSection() {
       data-theme-section="daily"
       className="relative z-50 -mt-8 px-4 pt-0 sm:-mt-12 sm:px-6 lg:-mt-[22svh] lg:px-10"
     >
-      <div
+      <ScenePanel
         data-daily-shell
-        className="mx-auto max-w-[92rem] overflow-hidden rounded-[2.5rem] border border-[rgba(79,45,30,0.08)] bg-[linear-gradient(180deg,#fff7ef_0%,#f3dfcf_100%)] px-5 pb-10 pt-10 shadow-[0_42px_120px_rgba(79,45,30,0.14)] sm:px-8 sm:pb-12 sm:pt-12 lg:px-10 lg:pb-14 lg:pt-14"
+        tone="cream"
+        className="mx-auto max-w-[92rem] rounded-[2.5rem] bg-[linear-gradient(180deg,#fff7ef_0%,#f3dfcf_100%)] pb-10 pt-10 shadow-[0_42px_120px_rgba(79,45,30,0.14)] sm:pb-12 sm:pt-12 lg:pb-14 lg:pt-14"
       >
         <div className="grid gap-6">
           <div className="max-w-[46rem]">
@@ -84,9 +89,9 @@ export function DailyBakesSection() {
             >
               <div className="flex w-max gap-4 pr-4 sm:pr-6">
                 {siteData.seasonalMoments.map((item, index) => (
-                  <div
+                  <SceneCallout
                     key={item}
-                    className="w-[82vw] max-w-[21rem] shrink-0 snap-start rounded-[1.8rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.82)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[22rem] lg:w-[24rem]"
+                    className="w-[82vw] max-w-[21rem] shrink-0 snap-start bg-[rgba(255,248,241,0.82)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[22rem] lg:w-[24rem]"
                   >
                     <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
                       {seasonLabels[index] ?? "Sezon"}
@@ -97,13 +102,13 @@ export function DailyBakesSection() {
                     <p className="mt-4 text-sm leading-6 text-[var(--color-brown-soft)]">
                       {item}
                     </p>
-                  </div>
+                  </SceneCallout>
                 ))}
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </ScenePanel>
     </section>
   );
 }
