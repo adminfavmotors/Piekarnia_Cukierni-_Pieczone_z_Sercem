@@ -3,6 +3,11 @@ import {
   SceneCallout,
   ScenePanel,
 } from "@/components/home/scene-primitives";
+import {
+  SectionKicker,
+  SectionLead,
+  SectionTitle,
+} from "@/components/home/section-copy";
 import { siteData } from "@/data/site";
 
 const seasonLabels = ["Wiosna", "Lato", "Jesień", "Zima"] as const;
@@ -20,18 +25,16 @@ export function DailyBakesSection() {
         className="mx-auto max-w-[92rem] rounded-[2.5rem] bg-[linear-gradient(180deg,#fff7ef_0%,#f3dfcf_100%)] pb-10 pt-10 shadow-[0_42px_120px_rgba(79,45,30,0.14)] sm:pb-12 sm:pt-12 lg:pb-14 lg:pt-14"
       >
         <div className="grid gap-6">
-          <div className="max-w-[46rem]">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-accent)]">
-              Co dziś pieczemy
-            </p>
-            <p className="mt-4 font-display text-[2.5rem] leading-[0.94] tracking-[-0.05em] text-[var(--color-brown-deep)] sm:text-5xl">
+          <div className="max-w-[46rem] space-y-4">
+            <SectionKicker>Co dziś pieczemy</SectionKicker>
+            <SectionTitle>
               Codzienna tablica wypieków pokazuje, co dziś trafia do pieca i na
               ladę.
-            </p>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--color-brown-soft)] sm:text-lg">
+            </SectionTitle>
+            <SectionLead className="max-w-2xl">
               Najpierw pokazujemy to, co dziś trafia na ladę, a niżej osobno
               zbieramy sezonowe smaki i powroty, na które warto czekać.
-            </p>
+            </SectionLead>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -74,13 +77,11 @@ export function DailyBakesSection() {
           </div>
 
           <div className="grid gap-5 pt-2">
-            <div className="max-w-[38rem]">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-accent)]">
-                Sezonowość
-              </p>
-              <p className="mt-3 font-display text-[2rem] leading-[0.96] tracking-[-0.04em] text-[var(--color-brown-deep)] sm:text-[2.5rem]">
+            <div className="max-w-[38rem] space-y-3">
+              <SectionKicker>Sezonowość</SectionKicker>
+              <SectionTitle className="text-[2rem] sm:text-[2.5rem]">
                 Sezonowe smaki dostają własny rytm i własną karuzelę.
-              </p>
+              </SectionTitle>
             </div>
 
             <div
@@ -93,12 +94,12 @@ export function DailyBakesSection() {
                     key={item}
                     className="w-[82vw] max-w-[21rem] shrink-0 snap-start bg-[rgba(255,248,241,0.82)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[22rem] lg:w-[24rem]"
                   >
-                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
+                    <SectionKicker className="tracking-[0.24em]">
                       {seasonLabels[index] ?? "Sezon"}
-                    </p>
-                    <p className="mt-4 font-display text-[2rem] leading-none tracking-[-0.04em] text-[var(--color-brown-deep)]">
+                    </SectionKicker>
+                    <SectionTitle className="mt-4 text-[2rem] leading-none sm:text-[2rem]">
                       {seasonLabels[index] ?? "Sezon"}
-                    </p>
+                    </SectionTitle>
                     <p className="mt-4 text-sm leading-6 text-[var(--color-brown-soft)]">
                       {item}
                     </p>

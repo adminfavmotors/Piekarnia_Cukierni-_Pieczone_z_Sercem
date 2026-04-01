@@ -14,6 +14,11 @@ import {
   SceneCallout,
   ScenePanel,
 } from "@/components/home/scene-primitives";
+import {
+  SectionKicker,
+  SectionLead,
+  SectionTitle,
+} from "@/components/home/section-copy";
 import { SectionHeading } from "@/components/home/section-heading";
 import { siteData } from "@/data/site";
 
@@ -99,19 +104,23 @@ export function HeroScene() {
               data-hero-layer="copy"
               className="relative z-10 flex max-w-[24rem] flex-col justify-end pt-6 text-[var(--color-cream-light)] sm:max-w-[28rem] lg:pt-24"
             >
-              <p
+              <SectionKicker
+                tone="light"
+                className="tracking-[0.32em] text-[rgba(255,248,241,0.76)] sm:text-xs"
                 data-hero-label
-                className="text-xs font-semibold uppercase tracking-[0.32em] text-[rgba(255,248,241,0.76)]"
               >
                 {siteData.hero.eyebrow}
-              </p>
+              </SectionKicker>
               <div data-hero-copy className="mt-6 space-y-5">
                 <h1 className="font-display text-[2.9rem] leading-[0.88] tracking-[-0.07em] sm:text-6xl lg:text-[5.8rem]">
                   {siteData.hero.title}
                 </h1>
-                <p className="max-w-md text-base leading-7 text-[rgba(255,248,241,0.82)] sm:text-lg sm:leading-8">
+                <SectionLead
+                  tone="light"
+                  className="max-w-md text-[rgba(255,248,241,0.82)] sm:leading-8"
+                >
                   {siteData.hero.description}
-                </p>
+                </SectionLead>
               </div>
               <div
                 data-hero-actions
@@ -147,9 +156,12 @@ export function HeroScene() {
                   />
                 </div>
                 <div className="mt-4">
-                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[rgba(255,248,241,0.7)]">
+                  <SectionKicker
+                    tone="light"
+                    className="text-[0.7rem] tracking-[0.2em] text-[rgba(255,248,241,0.7)]"
+                  >
                     chleb dnia
-                  </p>
+                  </SectionKicker>
                   <p className="mt-2 text-sm leading-6 text-[var(--color-cream-light)]">
                     Miękkie, świeże bochenki jako drugi plan zamiast kolejnego boxa z tekstem.
                   </p>
@@ -160,9 +172,12 @@ export function HeroScene() {
                 data-hero-detail-card
                 className="absolute bottom-0 right-12 max-w-[18rem] rounded-[2rem] border border-[rgba(255,248,241,0.16)] bg-[rgba(36,18,12,0.48)] px-5 py-5 shadow-[0_28px_70px_rgba(0,0,0,0.22)] backdrop-blur-md"
               >
-                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[rgba(255,248,241,0.7)]">
+                <SectionKicker
+                  tone="light"
+                  className="text-[0.7rem] tracking-[0.22em] text-[rgba(255,248,241,0.7)]"
+                >
                   dziś w piekarni
-                </p>
+                </SectionKicker>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {siteData.dailyBakes.slice(0, 3).map((bake) => (
                     <span
@@ -232,14 +247,12 @@ export function TasteScene() {
                     <div className="rounded-full bg-[rgba(233,79,60,0.12)] p-3 text-[var(--color-accent)]">
                       <Icon className="h-5 w-5" />
                     </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-                        {label}
-                      </p>
-                      <p className="mt-2 font-display text-3xl leading-none tracking-[-0.04em]">
+                    <div className="space-y-2">
+                      <SectionKicker className="tracking-[0.24em]">{label}</SectionKicker>
+                      <SectionTitle className="text-3xl leading-none sm:text-3xl">
                         {title}
-                      </p>
-                      <p className="mt-3 text-sm leading-6 text-[var(--color-brown-soft)]">
+                      </SectionTitle>
+                      <p className="text-sm leading-6 text-[var(--color-brown-soft)]">
                         {description}
                       </p>
                     </div>
@@ -261,9 +274,7 @@ export function TasteScene() {
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(46,26,18,0.02),rgba(46,26,18,0.24))]" />
             </div>
             <SceneCallout className="absolute -bottom-8 left-0 hidden max-w-[18rem] sm:left-8 lg:block">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-                Od rana pachnie piecem
-              </p>
+              <SectionKicker>Od rana pachnie piecem</SectionKicker>
               <p className="mt-3 text-sm leading-6 text-[var(--color-brown-soft)]">
                 Najmocniej działa prosty widok: świeża blacha, miękki środek i złoty wierzch.
               </p>
@@ -307,9 +318,7 @@ export function IngredientsScene() {
               />
             </div>
             <SceneCallout className="absolute -bottom-8 right-0 hidden max-w-[17rem] sm:right-8 lg:block">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-                Prosty skład
-              </p>
+              <SectionKicker>Prosty skład</SectionKicker>
               <p className="mt-3 text-sm leading-6 text-[var(--color-brown-soft)]">
                 Dobre wypieki zaczynają się od mąki, masła, owoców i codziennej dbałości o jakość.
               </p>
@@ -329,13 +338,13 @@ export function IngredientsScene() {
                   key={note}
                   data-stagger-item
                   tone="light"
-                  className={`rounded-[1.6rem] px-5 py-5 shadow-[0_18px_48px_rgba(79,45,30,0.07)] ${
+                  className={
                     index === 0
                       ? "bg-white/78 sm:col-span-2"
                       : index === 1
                         ? "bg-[rgba(235,171,163,0.22)]"
                         : "bg-[rgba(79,45,30,0.06)]"
-                  }`}
+                  }
                 >
                   <p className="text-sm leading-6 text-[var(--color-brown-soft)]">
                     {note}
@@ -369,15 +378,15 @@ export function HeartScene() {
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(233,79,60,0.24),transparent_24%),radial-gradient(circle_at_20%_80%,rgba(235,171,163,0.14),transparent_30%)]" />
           <div className="relative space-y-6 lg:max-w-[44rem]">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[rgba(255,248,241,0.72)]">
+            <SectionKicker tone="light" className="tracking-[0.3em]">
               Wypiekane z sercem
-            </p>
-            <p className="font-display text-[2.8rem] leading-[0.92] tracking-[-0.06em] sm:text-6xl">
+            </SectionKicker>
+            <SectionTitle tone="light" size="display">
               Domowy klimat, serdeczność i smak, do którego chce się wracać.
-            </p>
-            <p className="max-w-xl text-base leading-7 text-[rgba(255,248,241,0.82)] sm:text-lg">
+            </SectionTitle>
+            <SectionLead tone="light" className="max-w-xl">
               Pieczone z Sercem ma być miejscem bliskim i spokojnym. Takim, do którego zagląda się po coś dobrego i wychodzi z lepszym nastrojem.
-            </p>
+            </SectionLead>
           </div>
 
           <div data-scene-photo="heart" className="relative mt-8 lg:mt-0">
@@ -395,9 +404,9 @@ export function HeartScene() {
               tone="glass"
               className="absolute -bottom-8 left-0 hidden max-w-[17rem] sm:left-6 lg:block"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[rgba(255,248,241,0.76)]">
+              <SectionKicker tone="light" className="text-[rgba(255,248,241,0.76)]">
                 Domowy rytm
-              </p>
+              </SectionKicker>
               <p className="mt-3 text-sm leading-6 text-[rgba(255,248,241,0.82)]">
                 Tu liczy się nie tylko smak. Liczy się też ciepło miejsca i zwykła ludzka życzliwość.
               </p>
@@ -426,16 +435,14 @@ export function ContactSection() {
           className="grid gap-6 rounded-[2.2rem] bg-[var(--color-brown-deep)] px-5 py-8 text-[var(--color-cream-light)] shadow-[0_28px_70px_rgba(46,26,18,0.24)] sm:px-8 lg:grid-cols-[1fr_0.9fr] lg:items-end"
         >
           <div className="space-y-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[rgba(255,248,241,0.72)]">
-              Zapraszamy do nas
-            </p>
-            <h2 className="font-display text-4xl leading-none tracking-[-0.04em] sm:text-5xl">
+            <SectionKicker tone="light">Zapraszamy do nas</SectionKicker>
+            <SectionTitle tone="light">
               Smak, serdeczność i świeże wypieki każdego dnia.
-            </h2>
-            <p className="max-w-xl text-base leading-7 text-[rgba(255,248,241,0.82)]">
+            </SectionTitle>
+            <SectionLead tone="light" className="max-w-xl">
               Jeśli jesteś w okolicy, zajrzyj po coś dobrego na wynos albo po
               chleb, który od razu pachnie domem.
-            </p>
+            </SectionLead>
           </div>
 
           <div className="grid gap-4 rounded-[1.5rem] bg-[rgba(255,248,241,0.08)] p-5">
