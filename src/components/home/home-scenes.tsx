@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { ActionLink, Pill } from "@/components/home/home-ui";
+import { bakeryMedia } from "@/components/home/bakery-media";
 import {
   SceneCallout,
   ScenePanel,
@@ -81,10 +82,11 @@ export function HeroScene() {
       <div className="relative min-h-[122svh] overflow-hidden sm:min-h-[132svh] lg:sticky lg:top-0 lg:h-svh lg:min-h-0">
         <div data-hero-main-image className="absolute inset-0 scale-[1.01]">
           <Image
-            src="/images/bakery/hero-berries.png"
+            src={bakeryMedia.heroBerries}
             alt="Domowe drożdżówki i słodkie wypieki na blasze"
             fill
             priority
+            placeholder="blur"
             className="object-cover object-center"
             sizes="100vw"
           />
@@ -143,9 +145,10 @@ export function HeroScene() {
               >
                 <div className="relative aspect-[0.86] overflow-hidden rounded-[1.4rem]">
                   <Image
-                    src="/images/bakery/bread-basket.png"
+                    src={bakeryMedia.breadBasket}
                     alt="Świeże chleby i bułki w wiklinowym koszu"
                     fill
+                    placeholder="blur"
                     className="object-cover"
                     sizes="15rem"
                   />
@@ -258,9 +261,10 @@ export function TasteScene() {
           <div data-scene-photo="taste" className="relative mt-8 lg:mt-0 lg:pl-4">
             <div className="relative aspect-[0.92] overflow-hidden rounded-[2.2rem] shadow-[0_36px_100px_rgba(79,45,30,0.18)]">
               <Image
-                src="/images/bakery/cinnamon-rolls.png"
+                src={bakeryMedia.cinnamonRolls}
                 alt="Cynamonki i drożdżówki pokazane w dużym, apetycznym kadrze"
                 fill
+                placeholder="blur"
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 42vw"
               />
@@ -303,9 +307,10 @@ export function IngredientsScene() {
           >
             <div className="relative aspect-[0.98] overflow-hidden rounded-[2.2rem] shadow-[0_36px_100px_rgba(79,45,30,0.16)]">
               <Image
-                src="/images/bakery/bread-basket.png"
+                src={bakeryMedia.breadBasket}
                 alt="Świeże wypieki w koszu jako spokojny kadr sekcji o składnikach"
                 fill
+                placeholder="blur"
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 38vw"
               />
@@ -385,9 +390,10 @@ export function HeartScene() {
           <div data-scene-photo="heart" className="relative mt-8 lg:mt-0">
             <div className="relative ml-auto aspect-[0.92] max-w-[29rem] overflow-hidden rounded-[2.2rem] border border-[rgba(255,248,241,0.12)] shadow-[0_28px_90px_rgba(0,0,0,0.24)]">
               <Image
-                src="/images/bakery/hero-berries.png"
+                src={bakeryMedia.heroBerries}
                 alt="Zbliżenie na domowe wypieki jako ciepła, emocjonalna scena"
                 fill
+                placeholder="blur"
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 30vw"
               />
