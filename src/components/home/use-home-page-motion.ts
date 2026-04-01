@@ -1,21 +1,21 @@
 "use client";
 
-import { RefObject, useEffect } from "react";
+import { useGSAP } from "@gsap/react";
+import { RefObject } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 type RootRef = RefObject<HTMLElement | null>;
 
 export function useHomePageMotion(rootRef: RootRef) {
-  useEffect(() => {
-    const root = rootRef.current;
-
-    if (!root) {
-      return;
-    }
-
+  useGSAP(
+    () => {
+      const root = rootRef.current;
+      if (!root) {
+        return;
+      }
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -24,8 +24,7 @@ export function useHomePageMotion(rootRef: RootRef) {
       document.body.dataset.theme = theme;
     };
 
-    const desktopMedia = gsap.matchMedia();
-    const context = gsap.context(() => {
+      const desktopMedia = gsap.matchMedia();
       const themeSections = gsap.utils.toArray<HTMLElement>("[data-theme-section]");
       const initialTheme =
         themeSections[0]?.dataset.themeSection?.trim() || "hero";
@@ -343,12 +342,12 @@ export function useHomePageMotion(rootRef: RootRef) {
           },
         });
       });
-    }, root);
 
-    return () => {
-      delete document.body.dataset.theme;
-      desktopMedia.revert();
-      context.revert();
-    };
-  }, [rootRef]);
+      return () => {
+        delete document.body.dataset.theme;
+        desktopMedia.revert();
+      };
+    },
+    { scope: rootRef },
+  );
 }
