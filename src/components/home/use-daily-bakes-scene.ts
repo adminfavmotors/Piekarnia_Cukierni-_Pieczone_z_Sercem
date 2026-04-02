@@ -6,6 +6,8 @@ import { Draggable } from "gsap/all";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import { DAILY_MOTION } from "@/components/home/home-motion-config";
+
 gsap.registerPlugin(ScrollTrigger, Draggable, useGSAP);
 
 type RootRef = RefObject<HTMLElement | null>;
@@ -69,7 +71,10 @@ export function useDailyBakesScene(rootRef: RootRef) {
           const deltaY = touch.clientY - startY;
 
           if (!horizontalLock) {
-            if (Math.abs(deltaX) > Math.abs(deltaY) + 8) {
+            if (
+              Math.abs(deltaX) >
+              Math.abs(deltaY) + DAILY_MOTION.swipeAxisLockThreshold
+            ) {
               horizontalLock = true;
             } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
               return;
@@ -171,7 +176,6 @@ export function useDailyBakesScene(rootRef: RootRef) {
         }
 
         const distance = getDistance();
-
         if (!distance) {
           return;
         }
@@ -187,7 +191,7 @@ export function useDailyBakesScene(rootRef: RootRef) {
 
       const mm = gsap.matchMedia();
 
-      mm.add("(min-width: 1024px)", () => {
+      mm.add(DAILY_MOTION.desktopBreakpoint, () => {
         if (getDistance() <= 0) {
           return;
         }
@@ -197,11 +201,11 @@ export function useDailyBakesScene(rootRef: RootRef) {
           ease: "none",
           scrollTrigger: {
             trigger: dailyScene,
-            start: "top top+=96",
+            start: DAILY_MOTION.desktopStart,
             end: () => `+=${getDistance()}`,
-            scrub: true,
+            scrub: DAILY_MOTION.scrub,
             pin: dailyScene,
-            anticipatePin: 1,
+            anticipatePin: DAILY_MOTION.anticipatePin,
             invalidateOnRefresh: true,
           },
         });

@@ -5,6 +5,8 @@ import { RefObject } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import { HOME_MOTION, HOME_SCENES } from "@/components/home/home-motion-config";
+
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 type RootRef = RefObject<HTMLElement | null>;
@@ -16,13 +18,14 @@ export function useHomePageMotion(rootRef: RootRef) {
       if (!root) {
         return;
       }
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
 
-    const setTheme = (theme: string) => {
-      document.body.dataset.theme = theme;
-    };
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      const setTheme = (theme: string) => {
+        document.body.dataset.theme = theme;
+      };
 
       const desktopMedia = gsap.matchMedia();
       const themeSections = gsap.utils.toArray<HTMLElement>("[data-theme-section]");
@@ -40,34 +43,39 @@ export function useHomePageMotion(rootRef: RootRef) {
 
         ScrollTrigger.create({
           trigger: section,
-          start: "top 60%",
-          end: "bottom 40%",
+          start: HOME_MOTION.themeRange.start,
+          end: HOME_MOTION.themeRange.end,
           onEnter: () => setTheme(theme),
           onEnterBack: () => setTheme(theme),
         });
       });
 
       if (prefersReducedMotion) {
-        return;
+        return () => {
+          delete document.body.dataset.theme;
+        };
       }
+
+      const heroIntro = HOME_MOTION.heroIntro;
+      const heroScroll = HOME_MOTION.heroScroll;
 
       const heroTimeline = gsap.timeline({
         defaults: {
-          duration: 0.95,
-          ease: "power3.out",
+          duration: heroIntro.duration,
+          ease: heroIntro.ease,
         },
       });
 
       heroTimeline
         .from("[data-hero-label]", {
           opacity: 0,
-          y: 18,
+          y: heroIntro.labelY,
         })
         .from(
           "[data-hero-copy]",
           {
             opacity: 0,
-            y: 34,
+            y: heroIntro.copyY,
           },
           "-=0.55",
         )
@@ -75,7 +83,7 @@ export function useHomePageMotion(rootRef: RootRef) {
           "[data-hero-actions]",
           {
             opacity: 0,
-            y: 24,
+            y: heroIntro.actionsY,
           },
           "-=0.55",
         )
@@ -83,8 +91,8 @@ export function useHomePageMotion(rootRef: RootRef) {
           "[data-hero-photo-main]",
           {
             opacity: 0,
-            y: 18,
-            scale: 1.06,
+            y: heroIntro.mediaY,
+            scale: heroIntro.mediaScale,
           },
           "-=0.75",
         )
@@ -92,9 +100,9 @@ export function useHomePageMotion(rootRef: RootRef) {
           "[data-hero-detail-card]",
           {
             opacity: 0,
-            y: 28,
-            scale: 0.96,
-            stagger: 0.08,
+            y: heroIntro.detailY,
+            scale: heroIntro.detailScale,
+            stagger: heroIntro.detailStagger,
           },
           "-=0.55",
         )
@@ -102,68 +110,66 @@ export function useHomePageMotion(rootRef: RootRef) {
           "[data-hero-scroll-note]",
           {
             opacity: 0,
-            y: 12,
+            y: heroIntro.scrollNoteY,
           },
           "-=0.35",
         );
 
-      const reveals = gsap.utils.toArray<HTMLElement>("[data-reveal]");
-
-      reveals.forEach((element) => {
+      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => {
         gsap.fromTo(
           element,
           {
             opacity: 0,
-            y: 44,
+            y: HOME_MOTION.reveal.y,
           },
           {
             opacity: 1,
             y: 0,
-            duration: 0.95,
-            ease: "power3.out",
+            duration: HOME_MOTION.reveal.duration,
+            ease: HOME_MOTION.reveal.ease,
             scrollTrigger: {
               trigger: element,
-              start: "top 82%",
+              start: HOME_MOTION.reveal.start,
               toggleActions: "play none none reverse",
             },
           },
         );
       });
 
-      const staggerGroups = gsap.utils.toArray<HTMLElement>("[data-stagger-group]");
+      gsap.utils
+        .toArray<HTMLElement>("[data-stagger-group]")
+        .forEach((group) => {
+          const items = group.querySelectorAll<HTMLElement>("[data-stagger-item]");
 
-      staggerGroups.forEach((group) => {
-        const items = group.querySelectorAll<HTMLElement>("[data-stagger-item]");
+          if (!items.length) {
+            return;
+          }
 
-        if (!items.length) {
-          return;
-        }
-
-        gsap.fromTo(
-          items,
-          {
-            opacity: 0,
-            y: 30,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.08,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: group,
-              start: "top 80%",
-              toggleActions: "play none none reverse",
+          gsap.fromTo(
+            items,
+            {
+              opacity: 0,
+              y: HOME_MOTION.stagger.y,
             },
-          },
-        );
-      });
+            {
+              opacity: 1,
+              y: 0,
+              duration: HOME_MOTION.stagger.duration,
+              stagger: HOME_MOTION.stagger.each,
+              ease: HOME_MOTION.stagger.ease,
+              scrollTrigger: {
+                trigger: group,
+                start: HOME_MOTION.stagger.start,
+                toggleActions: "play none none reverse",
+              },
+            },
+          );
+        });
 
-      desktopMedia.add("(min-width: 1024px)", () => {
+      desktopMedia.add(HOME_MOTION.desktopBreakpoint, () => {
         gsap.to("[data-hero-main-image]", {
-          scale: 1.08,
-          yPercent: -8,
+          scale: heroScroll.imageScale,
+          yPercent: heroScroll.imageYPercent,
           ease: "none",
           scrollTrigger: {
             trigger: "[data-theme-section='hero']",
@@ -174,8 +180,8 @@ export function useHomePageMotion(rootRef: RootRef) {
         });
 
         gsap.to("[data-hero-layer='copy']", {
-          yPercent: -16,
-          opacity: 0.45,
+          yPercent: heroScroll.copyYPercent,
+          opacity: heroScroll.copyOpacity,
           ease: "none",
           scrollTrigger: {
             trigger: "[data-theme-section='hero']",
@@ -186,8 +192,8 @@ export function useHomePageMotion(rootRef: RootRef) {
         });
 
         gsap.to("[data-hero-detail-card]", {
-          yPercent: -14,
-          stagger: 0.06,
+          yPercent: heroScroll.cardYPercent,
+          stagger: heroScroll.cardStagger,
           ease: "none",
           scrollTrigger: {
             trigger: "[data-theme-section='hero']",
@@ -198,7 +204,7 @@ export function useHomePageMotion(rootRef: RootRef) {
         });
 
         gsap.to("[data-hero-backdrop]", {
-          opacity: 0.72,
+          opacity: heroScroll.backdropOpacity,
           ease: "none",
           scrollTrigger: {
             trigger: "[data-theme-section='hero']",
@@ -210,7 +216,7 @@ export function useHomePageMotion(rootRef: RootRef) {
 
         gsap.to("[data-hero-floor]", {
           opacity: 1,
-          yPercent: -10,
+          yPercent: heroScroll.floorYPercent,
           ease: "none",
           scrollTrigger: {
             trigger: "[data-theme-section='hero']",
@@ -220,126 +226,53 @@ export function useHomePageMotion(rootRef: RootRef) {
           },
         });
 
-        gsap.fromTo(
-          "[data-scene-panel='taste']",
-          {
-            y: 70,
-            scale: 0.97,
-            clipPath: "inset(14% 0% 0% 0% round 2.5rem)",
-          },
-          {
-            y: 0,
-            scale: 1,
-            clipPath: "inset(0% 0% 0% 0% round 2.5rem)",
+        HOME_SCENES.forEach((scene) => {
+          gsap.fromTo(
+            `[data-scene-panel='${scene.panel}']`,
+            {
+              y: scene.fromY,
+              scale: scene.fromScale,
+              clipPath: `inset(${scene.inset} 0% 0% 0% round ${scene.radius})`,
+            },
+            {
+              y: 0,
+              scale: 1,
+              clipPath: `inset(0% 0% 0% 0% round ${scene.radius})`,
+              ease: "none",
+              scrollTrigger: {
+                trigger: `[data-theme-section='${scene.section}']`,
+                start: HOME_MOTION.sceneTransition.start,
+                end: HOME_MOTION.sceneTransition.end,
+                scrub: scene.panelScrub,
+              },
+            },
+          );
+
+          gsap.to(`[data-scene-photo='${scene.section}']`, {
+            yPercent: scene.photoYPercent,
+            scale: scene.photoScale,
             ease: "none",
             scrollTrigger: {
-              trigger: "[data-theme-section='taste']",
-              start: "top 92%",
-              end: "top 24%",
-              scrub: 0.95,
+              trigger: `[data-theme-section='${scene.section}']`,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: scene.photoScrub,
             },
-          },
-        );
+          });
 
-        gsap.to("[data-scene-photo='taste']", {
-          yPercent: -16,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='taste']",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        });
-
-        gsap.fromTo(
-          "[data-scene-panel='ingredients']",
-          {
-            y: 64,
-            scale: 0.975,
-            clipPath: "inset(16% 0% 0% 0% round 2.5rem)",
-          },
-          {
-            y: 0,
-            scale: 1,
-            clipPath: "inset(0% 0% 0% 0% round 2.5rem)",
-            ease: "none",
-            scrollTrigger: {
-              trigger: "[data-theme-section='ingredients']",
-              start: "top 92%",
-              end: "top 24%",
-              scrub: 0.95,
-            },
-          },
-        );
-
-        gsap.to("[data-scene-photo='ingredients']", {
-          yPercent: -18,
-          scale: 1.04,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='ingredients']",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        });
-
-        gsap.to("[data-ingredients-floor]", {
-          opacity: 1,
-          yPercent: -12,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='ingredients']",
-            start: "top 24%",
-            end: "bottom top",
-            scrub: 0.85,
-          },
-        });
-
-        gsap.fromTo(
-          "[data-scene-panel='heart']",
-          {
-            y: 56,
-            scale: 0.98,
-            clipPath: "inset(18% 0% 0% 0% round 2.6rem)",
-          },
-          {
-            y: 0,
-            scale: 1,
-            clipPath: "inset(0% 0% 0% 0% round 2.6rem)",
-            ease: "none",
-            scrollTrigger: {
-              trigger: "[data-theme-section='heart']",
-              start: "top 92%",
-              end: "top 24%",
-              scrub: 0.9,
-            },
-          },
-        );
-
-        gsap.to("[data-scene-photo='heart']", {
-          yPercent: -14,
-          scale: 1.03,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='heart']",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.9,
-          },
-        });
-
-        gsap.to("[data-heart-floor]", {
-          opacity: 1,
-          yPercent: -12,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='heart']",
-            start: "top 24%",
-            end: "bottom top",
-            scrub: 0.85,
-          },
+          if (scene.floorSelector) {
+            gsap.to(scene.floorSelector, {
+              opacity: 1,
+              yPercent: -12,
+              ease: "none",
+              scrollTrigger: {
+                trigger: `[data-theme-section='${scene.section}']`,
+                start: HOME_MOTION.floorTransition.start,
+                end: HOME_MOTION.floorTransition.end,
+                scrub: HOME_MOTION.floorTransition.scrub,
+              },
+            });
+          }
         });
       });
 
