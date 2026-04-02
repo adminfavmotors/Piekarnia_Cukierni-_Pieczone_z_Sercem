@@ -39,7 +39,7 @@ export function ScenePanel({
     <div
       {...props}
       className={cn(
-        "relative overflow-hidden rounded-[var(--radius-scene)] px-5 pb-8 pt-8 sm:px-8 sm:pb-10 sm:pt-10 lg:px-10 lg:pb-12 lg:pt-12",
+        "relative overflow-hidden rounded-[var(--radius-scene)] px-5 pb-6 pt-6 sm:px-7 sm:pb-8 sm:pt-8 lg:px-8 lg:pb-10 lg:pt-10",
         panelToneClasses[tone],
         className,
       )}

@@ -7,6 +7,7 @@ import {
   HeartHandshake,
   Leaf,
   MapPin,
+  PhoneCall,
   Wheat,
 } from "lucide-react";
 
@@ -33,16 +34,40 @@ const DESKTOP_DETAIL_IMAGE_SIZES = "(max-width: 1023px) 0px, 15rem";
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-[rgba(79,45,30,0.08)] bg-[var(--header-bg)]/96 backdrop-blur-md transition-colors duration-500">
-      <PageContainer className="flex items-center justify-between py-4">
-        <a
-          href="#top"
-          className="font-display text-2xl tracking-[-0.05em] sm:text-3xl"
-        >
-          {siteData.name}
-        </a>
-        <span className="hidden text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-brown-soft)] sm:inline-flex">
-          {siteData.city}
-        </span>
+      <PageContainer className="flex items-center justify-between gap-4 py-3">
+        <div className="flex min-w-0 flex-col">
+          <a
+            href="#top"
+            className="font-display text-[1.75rem] leading-none tracking-[-0.05em] sm:text-[2rem]"
+          >
+            {siteData.name}
+          </a>
+          <span className="mt-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-brown-soft)] sm:text-[0.72rem]">
+            {siteData.city}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="hidden items-center gap-2 rounded-full border border-[rgba(79,45,30,0.12)] bg-white/68 px-3 py-2 text-[0.72rem] font-semibold text-[var(--color-brown-deep)] lg:flex">
+            <Clock3 className="h-3.5 w-3.5 text-[var(--color-accent)]" />
+            <span>{siteData.hours}</span>
+          </div>
+          {siteData.phone ? (
+            <a
+              href={`tel:${siteData.phone}`}
+              className="hidden items-center gap-2 rounded-full border border-[rgba(79,45,30,0.12)] bg-white/68 px-3 py-2 text-[0.72rem] font-semibold text-[var(--color-brown-deep)] lg:flex"
+            >
+              <PhoneCall className="h-3.5 w-3.5 text-[var(--color-accent)]" />
+              <span>{siteData.phone}</span>
+            </a>
+          ) : null}
+          <a
+            href="#kontakt"
+            className="inline-flex items-center rounded-full bg-[var(--color-accent)] px-4 py-2 text-[0.72rem] font-semibold text-white shadow-[0_14px_30px_rgba(233,79,60,0.2)]"
+          >
+            {siteData.phone ? siteData.header.phoneLabel : siteData.header.contactFallback}
+          </a>
+        </div>
       </PageContainer>
     </header>
   );
@@ -53,9 +78,9 @@ export function HeroScene() {
     <section
       id="top"
       data-theme-section="hero"
-      className="relative isolate min-h-[100svh] overflow-hidden sm:min-h-[108svh] lg:min-h-[136svh]"
+      className="relative isolate min-h-[100svh] overflow-hidden sm:min-h-[104svh] lg:min-h-[124svh]"
     >
-      <div className="relative min-h-[100svh] overflow-hidden sm:min-h-[108svh] lg:sticky lg:top-0 lg:h-svh lg:min-h-0">
+      <div className="relative min-h-[100svh] overflow-hidden sm:min-h-[104svh] lg:sticky lg:top-0 lg:h-svh lg:min-h-0">
         <div data-hero-main-image className="absolute inset-0 scale-[1.01]">
           <Image
             src={bakeryMedia.heroBerries}
@@ -78,11 +103,11 @@ export function HeroScene() {
           className="absolute inset-x-0 bottom-0 h-[34vh] translate-y-[10%] bg-[linear-gradient(180deg,rgba(36,18,12,0)_0%,rgba(36,18,12,0.18)_30%,rgba(255,248,241,0.76)_100%)] opacity-0"
         />
 
-        <PageContainer className="relative flex min-h-[100svh] flex-col gap-10 pb-6 pt-14 sm:min-h-[108svh] sm:gap-12 sm:pb-8 lg:h-full lg:min-h-0 lg:gap-10 lg:pb-10 lg:pt-20">
-          <div className="grid gap-8 lg:grid-cols-[0.58fr_0.42fr] lg:items-start">
+        <PageContainer className="relative flex min-h-[100svh] flex-col gap-7 pb-5 pt-10 sm:min-h-[104svh] sm:gap-9 sm:pb-6 sm:pt-12 lg:h-full lg:min-h-0 lg:gap-8 lg:pb-8 lg:pt-16">
+          <div className="grid gap-6 lg:grid-cols-[0.58fr_0.42fr] lg:items-start">
             <div
               data-hero-layer="copy"
-              className="relative z-10 flex max-w-[22rem] flex-col justify-end pt-6 text-[var(--color-cream-light)] sm:max-w-[26rem] lg:max-w-[28rem] lg:pt-20"
+              className="relative z-10 flex max-w-[22rem] flex-col justify-end pt-4 text-[var(--color-cream-light)] sm:max-w-[26rem] lg:max-w-[28rem] lg:pt-14"
             >
               <div data-hero-label>
                 <SectionKicker
@@ -92,20 +117,20 @@ export function HeroScene() {
                   {siteData.hero.eyebrow}
                 </SectionKicker>
               </div>
-              <div data-hero-copy className="mt-6 space-y-5">
+              <div data-hero-copy className="mt-4 space-y-4">
                 <h1 className="font-display text-[2.9rem] leading-[0.88] tracking-[-0.07em] sm:text-6xl lg:text-[5.8rem]">
                   {siteData.hero.title}
                 </h1>
                 <SectionLead
                   tone="light"
-                  className="max-w-md text-[rgba(255,248,241,0.84)] sm:leading-8"
+                  className="max-w-md text-[rgba(255,248,241,0.84)] sm:leading-7"
                 >
                   {siteData.hero.description}
                 </SectionLead>
               </div>
               <div
                 data-hero-actions
-                className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
+                className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center"
               >
                 <ActionLink href="#co-dzis-pieczemy">
                   {siteData.hero.primaryCta}
@@ -116,7 +141,7 @@ export function HeroScene() {
               </div>
             </div>
 
-            <div className="relative z-10 hidden min-h-[26rem] lg:block">
+            <div className="relative z-10 hidden min-h-[23rem] lg:block">
               <div
                 data-hero-detail-card
                 className="absolute right-0 top-0 w-[15rem] overflow-hidden rounded-[2rem] border border-[rgba(255,248,241,0.16)] bg-[rgba(255,248,241,0.14)] p-4 shadow-[0_22px_54px_rgba(0,0,0,0.16)] backdrop-blur-[4px]"
@@ -170,7 +195,7 @@ export function HeroScene() {
             </div>
           </div>
 
-          <div className="relative z-10 mt-2 flex items-end justify-between gap-4 lg:mt-auto">
+          <div className="relative z-10 mt-1 flex items-end justify-between gap-4 lg:mt-auto">
             <Pill
               tone="darkGlass"
               className="max-w-[14rem] border border-[rgba(255,248,241,0.18)] bg-[rgba(255,248,241,0.12)] px-4 py-2 text-[0.68rem] tracking-[0.18em] backdrop-blur-[4px] sm:max-w-[18rem] sm:text-[0.72rem]"
@@ -195,13 +220,13 @@ export function TasteScene() {
   return (
     <section
       data-theme-section="taste"
-      className="relative z-20 -mt-10 px-4 pb-16 pt-0 sm:-mt-14 sm:px-6 sm:pb-20 lg:-mt-[24svh] lg:pb-24 lg:px-10"
+      className="relative z-20 -mt-8 px-4 pb-12 pt-0 sm:-mt-10 sm:px-6 sm:pb-14 lg:-mt-[18svh] lg:pb-18 lg:px-10"
     >
       <PageContainer>
         <div data-reveal data-scene-panel="taste">
           <ScenePanel className="lg:grid lg:grid-cols-[0.5fr_0.5fr] lg:items-end lg:gap-8">
             <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(233,79,60,0.08),rgba(233,79,60,0))]" />
-            <div className="relative space-y-8 lg:max-w-[32rem]">
+            <div className="relative space-y-6 lg:max-w-[32rem]">
               <SectionHeading
                 eyebrow={siteData.taste.eyebrow}
                 title={siteData.taste.title}
@@ -241,7 +266,7 @@ export function TasteScene() {
               </div>
             </div>
 
-            <div data-scene-photo="taste" className="relative mt-8 lg:mt-0 lg:pl-4">
+            <div data-scene-photo="taste" className="relative mt-6 lg:mt-0 lg:pl-3">
               <div className="relative aspect-[0.92] overflow-hidden rounded-[2.2rem] shadow-[0_24px_56px_rgba(79,45,30,0.14)]">
                 <Image
                   src={bakeryMedia.cinnamonRolls}
@@ -277,7 +302,7 @@ export function IngredientsScene() {
   return (
     <section
       data-theme-section="ingredients"
-      className="relative z-30 -mt-8 px-4 pb-16 pt-0 sm:-mt-12 sm:px-6 sm:pb-20 lg:-mt-[18svh] lg:pb-24 lg:px-10"
+      className="relative z-30 -mt-6 px-4 pb-12 pt-0 sm:-mt-8 sm:px-6 sm:pb-14 lg:-mt-[14svh] lg:pb-18 lg:px-10"
     >
       <PageContainer>
         <div data-reveal data-scene-panel="ingredients">
@@ -288,7 +313,7 @@ export function IngredientsScene() {
             <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(233,79,60,0.06),rgba(233,79,60,0))]" />
             <div
               data-scene-photo="ingredients"
-              className="relative order-2 mt-8 lg:order-1 lg:mt-0"
+              className="relative order-2 mt-6 lg:order-1 lg:mt-0"
             >
               <div className="relative aspect-[0.98] overflow-hidden rounded-[2.2rem] shadow-[0_24px_56px_rgba(79,45,30,0.12)]">
                 <Image
@@ -310,7 +335,7 @@ export function IngredientsScene() {
               </SceneCallout>
             </div>
 
-            <div className="relative order-1 space-y-8 lg:order-2 lg:pl-10">
+            <div className="relative order-1 space-y-6 lg:order-2 lg:pl-8">
               <SectionHeading
                 eyebrow={siteData.ingredients.eyebrow}
                 title={siteData.ingredients.title}
@@ -353,7 +378,7 @@ export function HeartScene() {
   return (
     <section
       data-theme-section="heart"
-      className="relative z-40 -mt-8 px-4 pb-16 pt-0 text-[var(--color-cream-light)] sm:-mt-12 sm:px-6 sm:pb-20 lg:-mt-[18svh] lg:pb-24 lg:px-10"
+      className="relative z-40 -mt-6 px-4 pb-12 pt-0 text-[var(--color-cream-light)] sm:-mt-8 sm:px-6 sm:pb-14 lg:-mt-[14svh] lg:pb-18 lg:px-10"
     >
       <PageContainer>
         <div data-reveal data-scene-panel="heart">
@@ -362,7 +387,7 @@ export function HeartScene() {
             className="rounded-[var(--radius-scene-lg)] pb-10 pt-10 sm:pb-12 sm:pt-12 lg:grid lg:grid-cols-[0.6fr_0.4fr] lg:items-end lg:gap-8 lg:pb-14 lg:pt-14"
           >
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(233,79,60,0.08),rgba(233,79,60,0))]" />
-            <div className="relative space-y-6 lg:max-w-[44rem]">
+            <div className="relative space-y-5 lg:max-w-[42rem]">
               <SectionKicker tone="light" className="tracking-[0.3em]">
                 {siteData.heart.eyebrow}
               </SectionKicker>
@@ -374,7 +399,7 @@ export function HeartScene() {
               </SectionLead>
             </div>
 
-            <div data-scene-photo="heart" className="relative mt-8 lg:mt-0">
+            <div data-scene-photo="heart" className="relative mt-6 lg:mt-0">
               <div className="relative ml-auto aspect-[0.92] max-w-[29rem] overflow-hidden rounded-[2.2rem] border border-[rgba(255,248,241,0.12)] shadow-[0_22px_60px_rgba(0,0,0,0.18)]">
                 <Image
                   src={bakeryMedia.heroBerries}
@@ -419,12 +444,12 @@ export function ContactSection() {
     <section
       data-theme-section="contact"
       id="kontakt"
-      className="relative z-50 bg-[linear-gradient(180deg,#f3dfcf_0%,#f1d8cb_100%)] pb-20 pt-8"
+      className="relative z-50 bg-[linear-gradient(180deg,#f3dfcf_0%,#f1d8cb_100%)] pb-14 pt-6"
     >
       <PageContainer>
         <div
           data-reveal
-          className="grid gap-6 rounded-[2.2rem] bg-[var(--color-brown-deep)] px-5 py-8 text-[var(--color-cream-light)] shadow-[0_20px_52px_rgba(46,26,18,0.18)] sm:px-8 lg:grid-cols-[1fr_0.9fr] lg:items-end"
+          className="grid gap-5 rounded-[2.2rem] bg-[var(--color-brown-deep)] px-5 py-7 text-[var(--color-cream-light)] shadow-[0_20px_52px_rgba(46,26,18,0.18)] sm:px-8 lg:grid-cols-[1fr_0.9fr] lg:items-end"
         >
           <div className="space-y-5">
             <SectionKicker tone="light">{siteData.contact.eyebrow}</SectionKicker>
@@ -453,6 +478,22 @@ export function ContactSection() {
                 <p className="mt-2 text-base leading-7">{siteData.hours}</p>
               </div>
             </div>
+            {siteData.phone ? (
+              <div className="flex items-start gap-3">
+                <PhoneCall className="mt-1 h-5 w-5 text-[var(--color-accent)]" />
+                <div>
+                  <p className="text-xs uppercase tracking-[0.24em] text-[rgba(255,248,241,0.6)]">
+                    {siteData.contact.phoneLabel}
+                  </p>
+                  <a
+                    href={`tel:${siteData.phone}`}
+                    className="mt-2 inline-flex text-base leading-7 text-[var(--color-cream-light)] underline decoration-[rgba(255,248,241,0.3)] underline-offset-4"
+                  >
+                    {siteData.phone}
+                  </a>
+                </div>
+              </div>
+            ) : null}
             <div className="flex items-start gap-3">
               <CakeSlice className="mt-1 h-5 w-5 text-[var(--color-accent)]" />
               <div>

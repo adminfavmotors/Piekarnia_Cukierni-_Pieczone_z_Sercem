@@ -34,16 +34,16 @@ export function DailyBakesSection() {
     <section
       id="co-dzis-pieczemy"
       data-theme-section="daily"
-      className="relative z-50 -mt-8 px-4 pt-0 sm:-mt-12 sm:px-6 lg:-mt-[18svh] lg:px-10"
+      className="relative z-50 -mt-6 px-4 pt-0 sm:-mt-8 sm:px-6 lg:-mt-[14svh] lg:px-10"
     >
       <PageContainer>
         <div data-daily-shell>
           <ScenePanel
             tone="cream"
-            className="rounded-[var(--radius-scene-lg)] bg-[linear-gradient(180deg,#fff7ef_0%,#f3dfcf_100%)] pb-10 pt-10 shadow-[var(--shadow-scene)] sm:pb-12 sm:pt-12 lg:pb-14 lg:pt-14"
+            className="rounded-[var(--radius-scene-lg)] bg-[linear-gradient(180deg,#fff7ef_0%,#f3dfcf_100%)] pb-8 pt-8 shadow-[var(--shadow-scene)] sm:pb-10 sm:pt-10 lg:pb-12 lg:pt-12"
           >
-            <div className="grid gap-8">
-              <div className="grid gap-5 lg:grid-cols-[minmax(0,0.7fr)_minmax(18rem,0.3fr)] lg:items-end">
+            <div className="grid gap-6">
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,0.7fr)_minmax(18rem,0.3fr)] lg:items-end">
                 <div className="max-w-[42rem] space-y-4">
                   <SectionKicker>{siteData.daily.eyebrow}</SectionKicker>
                   <SectionTitle>{siteData.daily.title}</SectionTitle>
@@ -82,7 +82,7 @@ export function DailyBakesSection() {
 
               <div
                 data-daily-scene
-                className="relative overflow-hidden rounded-[2.1rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.68)] px-0 py-0 lg:cursor-grab lg:min-h-[31rem] lg:active:cursor-grabbing"
+                className="relative overflow-hidden rounded-[2.1rem] border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.68)] px-0 py-0 lg:cursor-grab lg:min-h-[29rem] lg:active:cursor-grabbing"
               >
                 <div className="absolute inset-x-0 top-0 h-20 bg-[linear-gradient(180deg,rgba(255,248,241,0.28),transparent)]" />
                 <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-16 bg-[linear-gradient(90deg,rgba(255,247,239,0.94),rgba(255,247,239,0))] lg:block" />
