@@ -18,6 +18,9 @@ export const HOME_MOTION = {
     ease: "power3.out",
   },
   heroScroll: {
+    start: "top top",
+    end: "bottom top",
+    scrub: 0.8,
     imageScale: 1.08,
     imageYPercent: -8,
     copyYPercent: -16,
@@ -30,7 +33,7 @@ export const HOME_MOTION = {
   sceneTransition: {
     start: "top 92%",
     end: "top 24%",
-    scrub: 0.95,
+    scrub: 0.82,
   },
   floorTransition: {
     start: "top 24%",
@@ -44,12 +47,10 @@ type HomeSceneConfig = {
   panel: "taste" | "ingredients" | "heart";
   fromY: number;
   fromScale: number;
-  inset: string;
-  radius: string;
-  panelScrub: number;
+  fromOpacity: number;
   photoYPercent: number;
   photoScale: number;
-  photoScrub: number;
+  floorYPercent?: number;
   floorSelector?: string;
 };
 
@@ -59,24 +60,19 @@ export const HOME_SCENES: readonly HomeSceneConfig[] = [
     panel: "taste",
     fromY: 70,
     fromScale: 0.97,
-    inset: "14%",
-    radius: "2.5rem",
-    panelScrub: 0.95,
+    fromOpacity: 0.35,
     photoYPercent: -16,
-    photoScale: 1,
-    photoScrub: 1,
+    photoScale: 1.01,
   },
   {
     section: "ingredients",
     panel: "ingredients",
     fromY: 64,
     fromScale: 0.975,
-    inset: "16%",
-    radius: "2.5rem",
-    panelScrub: 0.95,
+    fromOpacity: 0.42,
     photoYPercent: -18,
     photoScale: 1.04,
-    photoScrub: 1,
+    floorYPercent: -12,
     floorSelector: "[data-ingredients-floor]",
   },
   {
@@ -84,12 +80,10 @@ export const HOME_SCENES: readonly HomeSceneConfig[] = [
     panel: "heart",
     fromY: 56,
     fromScale: 0.98,
-    inset: "18%",
-    radius: "2.6rem",
-    panelScrub: 0.9,
+    fromOpacity: 0.48,
     photoYPercent: -14,
     photoScale: 1.03,
-    photoScrub: 0.9,
+    floorYPercent: -12,
     floorSelector: "[data-heart-floor]",
   },
 ];
@@ -99,5 +93,4 @@ export const DAILY_MOTION = {
   desktopStart: "top top+=96",
   scrub: true,
   anticipatePin: 1,
-  swipeAxisLockThreshold: 8,
 } as const;

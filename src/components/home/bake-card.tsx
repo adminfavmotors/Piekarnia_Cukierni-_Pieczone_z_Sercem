@@ -5,7 +5,7 @@ import {
   CardSurface,
 } from "@/components/home/card-primitives";
 import { IconButton, Pill } from "@/components/home/home-ui";
-import type { DailyBake } from "@/data/site";
+import { siteData, type DailyBake } from "@/data/site";
 
 type BakeCardProps = {
   bake: DailyBake;
@@ -37,8 +37,8 @@ export function BakeCard({ bake }: BakeCardProps) {
       </div>
 
       <div className="mt-auto grid grid-cols-2 gap-3 pt-8 text-sm">
-        <CardInfoTile>Świeżo przygotowane na dziś</CardInfoTile>
-        <CardInfoTile>Najlepiej smakuje jeszcze ciepłe</CardInfoTile>
+        <CardInfoTile>{siteData.daily.cardNotes.primary}</CardInfoTile>
+        <CardInfoTile>{siteData.daily.cardNotes.secondary}</CardInfoTile>
       </div>
     </CardSurface>
   );

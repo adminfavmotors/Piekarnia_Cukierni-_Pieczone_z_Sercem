@@ -7,7 +7,7 @@ type SceneCalloutTone = "light" | "warm" | "glass";
 
 const panelToneClasses: Record<ScenePanelTone, string> = {
   light:
-    "border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.92)] shadow-[var(--shadow-scene)] backdrop-blur-sm",
+    "border border-[rgba(79,45,30,0.08)] bg-[rgba(255,248,241,0.92)] shadow-[var(--shadow-scene)]",
   cream:
     "border border-[rgba(79,45,30,0.08)] bg-[linear-gradient(180deg,#fff8f1_0%,#f9ebdd_100%)] shadow-[var(--shadow-scene-soft)]",
   dark:
@@ -20,7 +20,7 @@ const calloutToneClasses: Record<SceneCalloutTone, string> = {
   warm:
     "border border-[rgba(79,45,30,0.08)] bg-white/72 shadow-[var(--shadow-callout-soft)]",
   glass:
-    "border border-[rgba(255,248,241,0.1)] bg-[rgba(255,248,241,0.1)] shadow-[var(--shadow-callout-dark)] backdrop-blur-md",
+    "border border-[rgba(255,248,241,0.1)] bg-[rgba(255,248,241,0.12)] shadow-[var(--shadow-callout-dark)] backdrop-blur-[6px]",
 };
 
 type ScenePanelProps = {

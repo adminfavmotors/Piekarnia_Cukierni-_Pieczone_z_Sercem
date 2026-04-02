@@ -29,7 +29,7 @@ export function useHomePageMotion(rootRef: RootRef) {
       ).matches;
 
       const setTheme = (theme: string) => {
-        document.body.dataset.theme = theme;
+        root.dataset.pageTheme = theme;
       };
 
       const desktopMedia = gsap.matchMedia();
@@ -57,7 +57,7 @@ export function useHomePageMotion(rootRef: RootRef) {
 
       if (prefersReducedMotion) {
         return () => {
-          delete document.body.dataset.theme;
+          delete root.dataset.pageTheme;
         };
       }
 
@@ -84,7 +84,7 @@ export function useHomePageMotion(rootRef: RootRef) {
           });
         });
 
-      selectAll<HTMLElement>("[data-reveal]").forEach((element) => {
+      selectAll<HTMLElement>("[data-reveal]:not([data-scene-panel])").forEach((element) => {
         gsap.fromTo(
           element,
           {
@@ -140,72 +140,71 @@ export function useHomePageMotion(rootRef: RootRef) {
         const heroFloor = selectOne<HTMLElement>("[data-hero-floor]");
 
         if (heroSection && heroMainImage) {
-          gsap.to(heroMainImage, {
-            scale: heroScroll.imageScale,
-            yPercent: heroScroll.imageYPercent,
-            ease: "none",
+          const heroTimeline = gsap.timeline({
             scrollTrigger: {
               trigger: heroSection,
-              start: "top top",
-              end: "bottom top",
-              scrub: 0.9,
+              start: heroScroll.start,
+              end: heroScroll.end,
+              scrub: heroScroll.scrub,
             },
           });
-        }
 
-        if (heroSection && heroLayerCopy) {
-          gsap.to(heroLayerCopy, {
-            yPercent: heroScroll.copyYPercent,
-            opacity: heroScroll.copyOpacity,
-            ease: "none",
-            scrollTrigger: {
-              trigger: heroSection,
-              start: "top top",
-              end: "bottom top",
-              scrub: 0.85,
+          heroTimeline.to(
+            heroMainImage,
+            {
+              scale: heroScroll.imageScale,
+              yPercent: heroScroll.imageYPercent,
+              ease: "none",
             },
-          });
-        }
+            0,
+          );
 
-        if (heroSection && heroDetailCards.length) {
-          gsap.to(heroDetailCards, {
-            yPercent: heroScroll.cardYPercent,
-            stagger: heroScroll.cardStagger,
-            ease: "none",
-            scrollTrigger: {
-              trigger: heroSection,
-              start: "top top",
-              end: "bottom top",
-              scrub: 1,
-            },
-          });
-        }
+          if (heroLayerCopy) {
+            heroTimeline.to(
+              heroLayerCopy,
+              {
+                yPercent: heroScroll.copyYPercent,
+                opacity: heroScroll.copyOpacity,
+                ease: "none",
+              },
+              0,
+            );
+          }
 
-        if (heroSection && heroBackdrop) {
-          gsap.to(heroBackdrop, {
-            opacity: heroScroll.backdropOpacity,
-            ease: "none",
-            scrollTrigger: {
-              trigger: heroSection,
-              start: "top top",
-              end: "bottom top",
-              scrub: 0.8,
-            },
-          });
-        }
+          if (heroDetailCards.length) {
+            heroTimeline.to(
+              heroDetailCards,
+              {
+                yPercent: heroScroll.cardYPercent,
+                stagger: heroScroll.cardStagger,
+                ease: "none",
+              },
+              0,
+            );
+          }
 
-        if (heroSection && heroFloor) {
-          gsap.to(heroFloor, {
-            opacity: 1,
-            yPercent: heroScroll.floorYPercent,
-            ease: "none",
-            scrollTrigger: {
-              trigger: heroSection,
-              start: "top 20%",
-              end: "bottom top",
-              scrub: 0.85,
-            },
-          });
+          if (heroBackdrop) {
+            heroTimeline.to(
+              heroBackdrop,
+              {
+                opacity: heroScroll.backdropOpacity,
+                ease: "none",
+              },
+              0,
+            );
+          }
+
+          if (heroFloor) {
+            heroTimeline.to(
+              heroFloor,
+              {
+                opacity: 1,
+                yPercent: heroScroll.floorYPercent,
+                ease: "none",
+              },
+              0.08,
+            );
+          }
         }
 
         HOME_SCENES.forEach((scene) => {
@@ -226,59 +225,59 @@ export function useHomePageMotion(rootRef: RootRef) {
             return;
           }
 
-          gsap.fromTo(
+          const sceneTimeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: sectionEl,
+              start: HOME_MOTION.sceneTransition.start,
+              end: HOME_MOTION.sceneTransition.end,
+              scrub: HOME_MOTION.sceneTransition.scrub,
+            },
+          });
+
+          sceneTimeline.fromTo(
             panelEl,
             {
               y: scene.fromY,
               scale: scene.fromScale,
-              clipPath: `inset(${scene.inset} 0% 0% 0% round ${scene.radius})`,
+              opacity: scene.fromOpacity,
             },
             {
               y: 0,
               scale: 1,
-              clipPath: `inset(0% 0% 0% 0% round ${scene.radius})`,
+              opacity: 1,
               ease: "none",
-              scrollTrigger: {
-                trigger: sectionEl,
-                start: HOME_MOTION.sceneTransition.start,
-                end: HOME_MOTION.sceneTransition.end,
-                scrub: scene.panelScrub,
-              },
             },
+            0,
           );
 
           if (photoEl) {
-            gsap.to(photoEl, {
-              yPercent: scene.photoYPercent,
-              scale: scene.photoScale,
-              ease: "none",
-              scrollTrigger: {
-                trigger: sectionEl,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: scene.photoScrub,
+            sceneTimeline.to(
+              photoEl,
+              {
+                yPercent: scene.photoYPercent,
+                scale: scene.photoScale,
+                ease: "none",
               },
-            });
+              0,
+            );
           }
 
           if (floorEl) {
-            gsap.to(floorEl, {
-              opacity: 1,
-              yPercent: -12,
-              ease: "none",
-              scrollTrigger: {
-                trigger: sectionEl,
-                start: HOME_MOTION.floorTransition.start,
-                end: HOME_MOTION.floorTransition.end,
-                scrub: HOME_MOTION.floorTransition.scrub,
+            sceneTimeline.to(
+              floorEl,
+              {
+                opacity: 1,
+                yPercent: scene.floorYPercent ?? -12,
+                ease: "none",
               },
-            });
+              0.06,
+            );
           }
         });
       });
 
       return () => {
-        delete document.body.dataset.theme;
+        delete root.dataset.pageTheme;
         desktopMedia.revert();
       };
     },

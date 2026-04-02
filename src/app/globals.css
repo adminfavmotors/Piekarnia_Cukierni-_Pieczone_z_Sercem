@@ -17,13 +17,15 @@
   --radius-scene-lg: 2.5rem;
   --radius-callout: 1.8rem;
   --radius-card: 1.5rem;
-  --shadow-scene: 0 40px 120px rgba(79, 45, 30, 0.14);
-  --shadow-scene-soft: 0 40px 120px rgba(79, 45, 30, 0.12);
-  --shadow-scene-dark: 0 44px 130px rgba(20, 8, 5, 0.32);
-  --shadow-callout: 0 20px 60px rgba(79, 45, 30, 0.12);
-  --shadow-callout-soft: 0 18px 40px rgba(79, 45, 30, 0.06);
-  --shadow-callout-dark: 0 20px 60px rgba(0, 0, 0, 0.18);
-  --shadow-card: 0 24px 60px rgba(79, 45, 30, 0.08);
+  --shadow-scene: 0 28px 72px rgba(79, 45, 30, 0.12);
+  --shadow-scene-soft: 0 24px 56px rgba(79, 45, 30, 0.1);
+  --shadow-scene-dark: 0 28px 84px rgba(20, 8, 5, 0.24);
+  --shadow-callout: 0 14px 36px rgba(79, 45, 30, 0.1);
+  --shadow-callout-soft: 0 12px 28px rgba(79, 45, 30, 0.06);
+  --shadow-callout-dark: 0 16px 42px rgba(0, 0, 0, 0.14);
+  --shadow-card: 0 18px 42px rgba(79, 45, 30, 0.07);
+  --page-background: var(--color-cream);
+  --page-foreground: var(--color-brown-deep);
 }
 
 @theme inline {
@@ -38,16 +40,21 @@
 }
 
 html {
-  background: var(--background);
+  background: var(--color-cream);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-cream);
+  color: var(--color-brown-deep);
   font-family: var(--font-manrope), sans-serif;
+}
+
+.page-theme-shell {
+  background: var(--page-background);
+  color: var(--page-foreground);
   transition:
-    background-color 0.65s ease,
-    color 0.35s ease;
+    background-color 0.45s ease,
+    color 0.25s ease;
 }
 
 a,
@@ -60,45 +67,33 @@ button {
   color: var(--color-brown-deep);
 }
 
-.hero-glow {
-  background:
-    radial-gradient(circle at top left, rgba(233, 79, 60, 0.24), transparent 34%),
-    radial-gradient(circle at 78% 18%, rgba(235, 171, 163, 0.56), transparent 28%),
-    radial-gradient(circle at 65% 72%, rgba(255, 248, 241, 0.92), transparent 24%);
-  filter: blur(24px);
-  pointer-events: none;
-  transition:
-    opacity 0.5s ease,
-    transform 0.5s ease;
-}
-
-body[data-theme="hero"] {
-  --background: var(--color-cream);
+[data-page-theme="hero"] {
+  --page-background: var(--color-cream);
   --header-bg: rgba(255, 248, 241, 0.72);
 }
 
-body[data-theme="taste"] {
-  --background: #f7dfc5;
+[data-page-theme="taste"] {
+  --page-background: #f7dfc5;
   --header-bg: rgba(249, 229, 199, 0.76);
 }
 
-body[data-theme="ingredients"] {
-  --background: var(--color-cream-light);
+[data-page-theme="ingredients"] {
+  --page-background: var(--color-cream-light);
   --header-bg: rgba(255, 248, 241, 0.8);
 }
 
-body[data-theme="daily"] {
-  --background: #fff3ea;
+[data-page-theme="daily"] {
+  --page-background: #fff3ea;
   --header-bg: rgba(255, 248, 241, 0.84);
 }
 
-body[data-theme="categories"] {
-  --background: #fdf2e8;
+[data-page-theme="categories"] {
+  --page-background: #fdf2e8;
   --header-bg: rgba(255, 248, 241, 0.82);
 }
 
-body[data-theme="contact"] {
-  --background: #f8e6d9;
+[data-page-theme="contact"] {
+  --page-background: #f8e6d9;
   --header-bg: rgba(255, 248, 241, 0.78);
 }
 

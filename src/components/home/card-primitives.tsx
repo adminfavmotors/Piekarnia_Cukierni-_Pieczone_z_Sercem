@@ -20,7 +20,7 @@ export function CardSurface({
         className,
       )}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(233,79,60,0.12),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(235,171,163,0.16),transparent_34%)] opacity-90" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,248,241,0.06),rgba(255,248,241,0))]" />
       <div className="relative flex flex-1 flex-col">{children}</div>
       <div className="absolute inset-x-5 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(79,45,30,0.2),transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     </article>

@@ -12,6 +12,106 @@ gsap.registerPlugin(ScrollTrigger, Draggable, useGSAP);
 
 type RootRef = RefObject<HTMLElement | null>;
 
+function createDesktopScrollableRail(viewport: HTMLElement) {
+  const dragProxy = document.createElement("div");
+  let dragStartOffset = 0;
+
+  const draggable = Draggable.create(dragProxy, {
+    trigger: viewport,
+    type: "x",
+    allowContextMenu: true,
+    zIndexBoost: false,
+    minimumMovement: 6,
+    onPress() {
+      dragStartOffset = viewport.scrollLeft;
+      viewport.style.cursor = "grabbing";
+      gsap.set(dragProxy, { x: 0 });
+    },
+    onDrag() {
+      viewport.scrollLeft = dragStartOffset - this.x;
+    },
+    onRelease() {
+      viewport.style.cursor = "";
+    },
+  })[0];
+
+  return () => {
+    draggable.kill();
+  };
+}
+
+function createDesktopDailyScene(
+  scene: HTMLElement,
+  viewport: HTMLElement,
+  track: HTMLElement,
+) {
+  const getDistance = () =>
+    Math.max(0, track.scrollWidth - viewport.clientWidth);
+
+  const animation = gsap.to(track, {
+    x: () => -getDistance(),
+    ease: "none",
+    scrollTrigger: {
+      trigger: scene,
+      start: DAILY_MOTION.desktopStart,
+      end: () => `+=${getDistance()}`,
+      scrub: DAILY_MOTION.scrub,
+      pin: scene,
+      anticipatePin: DAILY_MOTION.anticipatePin,
+      invalidateOnRefresh: true,
+    },
+  });
+
+  const trigger = animation.scrollTrigger;
+
+  if (!trigger) {
+    return () => {
+      animation.kill();
+    };
+  }
+
+  const syncSceneOffset = (nextOffset: number) => {
+    const distance = getDistance();
+
+    if (!distance) {
+      return;
+    }
+
+    const clampedOffset = gsap.utils.clamp(0, distance, nextOffset);
+    const span = trigger.end - trigger.start;
+    const progress = clampedOffset / distance;
+
+    trigger.scroll(trigger.start + span * progress);
+  };
+
+  const dragProxy = document.createElement("div");
+  let dragStartOffset = 0;
+
+  const draggable = Draggable.create(dragProxy, {
+    trigger: viewport,
+    type: "x",
+    allowContextMenu: true,
+    zIndexBoost: false,
+    minimumMovement: 6,
+    onPress() {
+      dragStartOffset = Math.abs(Number(gsap.getProperty(track, "x")) || 0);
+      viewport.style.cursor = "grabbing";
+      gsap.set(dragProxy, { x: 0 });
+    },
+    onDrag() {
+      syncSceneOffset(dragStartOffset - this.x);
+    },
+    onRelease() {
+      viewport.style.cursor = "";
+    },
+  })[0];
+
+  return () => {
+    draggable.kill();
+    animation.kill();
+  };
+}
+
 export function useDailyBakesScene(rootRef: RootRef) {
   useGSAP(
     () => {
@@ -32,218 +132,38 @@ export function useDailyBakesScene(rootRef: RootRef) {
         "[data-seasonal-viewport]",
       );
 
-      let dailyDesktopTrigger: ScrollTrigger | null = null;
-      const setWindowScroll = ScrollTrigger.getScrollFunc(window);
-      const cleanups: Array<() => void> = [];
-
-      const bindNativeHorizontalViewport = (
-        viewport: HTMLElement,
-        options?: { enableDesktopPointer?: boolean },
-      ) => {
-        let startX = 0;
-        let startY = 0;
-        let startScrollLeft = 0;
-        let horizontalLock = false;
-        let isPointerDragging = false;
-        let activePointerId: number | null = null;
-        let pointerStartX = 0;
-        let pointerStartOffset = 0;
-
-        const onTouchStart = (event: TouchEvent) => {
-          if (event.touches.length !== 1) {
-            return;
-          }
-
-          const touch = event.touches[0];
-          startX = touch.clientX;
-          startY = touch.clientY;
-          startScrollLeft = viewport.scrollLeft;
-          horizontalLock = false;
-        };
-
-        const onTouchMove = (event: TouchEvent) => {
-          if (event.touches.length !== 1) {
-            return;
-          }
-
-          const touch = event.touches[0];
-          const deltaX = touch.clientX - startX;
-          const deltaY = touch.clientY - startY;
-
-          if (!horizontalLock) {
-            if (
-              Math.abs(deltaX) >
-              Math.abs(deltaY) + DAILY_MOTION.swipeAxisLockThreshold
-            ) {
-              horizontalLock = true;
-            } else if (Math.abs(deltaY) > Math.abs(deltaX)) {
-              return;
-            }
-          }
-
-          if (horizontalLock) {
-            event.preventDefault();
-            viewport.scrollLeft = startScrollLeft - deltaX;
-          }
-        };
-
-        const onPointerDown = (event: PointerEvent) => {
-          if (event.pointerType === "touch" || !options?.enableDesktopPointer) {
-            return;
-          }
-
-          isPointerDragging = true;
-          activePointerId = event.pointerId;
-          pointerStartX = event.clientX;
-          pointerStartOffset = viewport.scrollLeft;
-
-          viewport.setPointerCapture(event.pointerId);
-          event.preventDefault();
-        };
-
-        const onPointerMove = (event: PointerEvent) => {
-          if (
-            !isPointerDragging ||
-            activePointerId !== event.pointerId ||
-            window.innerWidth < 1024
-          ) {
-            return;
-          }
-
-          viewport.scrollLeft =
-            pointerStartOffset - (event.clientX - pointerStartX);
-          event.preventDefault();
-        };
-
-        const stopPointerDrag = (event: PointerEvent) => {
-          if (activePointerId !== event.pointerId) {
-            return;
-          }
-
-          isPointerDragging = false;
-          activePointerId = null;
-
-          if (viewport.hasPointerCapture(event.pointerId)) {
-            viewport.releasePointerCapture(event.pointerId);
-          }
-        };
-
-        viewport.addEventListener("touchstart", onTouchStart, {
-          passive: true,
-        });
-        viewport.addEventListener("touchmove", onTouchMove, {
-          passive: false,
-        });
-        viewport.addEventListener("pointerdown", onPointerDown);
-        viewport.addEventListener("pointermove", onPointerMove);
-        viewport.addEventListener("pointerup", stopPointerDrag);
-        viewport.addEventListener("pointercancel", stopPointerDrag);
-
-        cleanups.push(() => {
-          viewport.removeEventListener("touchstart", onTouchStart);
-          viewport.removeEventListener("touchmove", onTouchMove);
-          viewport.removeEventListener("pointerdown", onPointerDown);
-          viewport.removeEventListener("pointermove", onPointerMove);
-          viewport.removeEventListener("pointerup", stopPointerDrag);
-          viewport.removeEventListener("pointercancel", stopPointerDrag);
-        });
-      };
-
-      if (dailyViewport) {
-        bindNativeHorizontalViewport(dailyViewport, {
-          enableDesktopPointer: false,
-        });
-      }
-
-      if (seasonalViewport) {
-        bindNativeHorizontalViewport(seasonalViewport, {
-          enableDesktopPointer: true,
-        });
-      }
-
       if (prefersReducedMotion || !dailyScene || !dailyViewport || !dailyTrack) {
-        return () => {
-          cleanups.forEach((cleanup) => cleanup());
-        };
+        return;
       }
-
-      const getDistance = () =>
-        Math.max(0, dailyTrack.scrollWidth - dailyViewport.clientWidth);
-
-      const syncSceneOffset = (nextOffset: number) => {
-        if (!dailyDesktopTrigger) {
-          return;
-        }
-
-        const distance = getDistance();
-        if (!distance) {
-          return;
-        }
-
-        const clampedOffset = gsap.utils.clamp(0, distance, nextOffset);
-        const span = dailyDesktopTrigger.end - dailyDesktopTrigger.start;
-        const progress = clampedOffset / distance;
-        const targetY = dailyDesktopTrigger.start + span * progress;
-
-        setWindowScroll(targetY);
-        ScrollTrigger.update();
-      };
 
       const mm = gsap.matchMedia();
 
       mm.add(DAILY_MOTION.desktopBreakpoint, () => {
-        if (getDistance() <= 0) {
-          return;
+        const cleanups: Array<() => void> = [];
+
+        if (dailyTrack.scrollWidth <= dailyViewport.clientWidth) {
+          if (seasonalViewport && seasonalViewport.scrollWidth > seasonalViewport.clientWidth) {
+            cleanups.push(createDesktopScrollableRail(seasonalViewport));
+          }
+
+          return () => {
+            cleanups.forEach((cleanup) => cleanup());
+          };
         }
 
-        const animation = gsap.to(dailyTrack, {
-          x: () => -getDistance(),
-          ease: "none",
-          scrollTrigger: {
-            trigger: dailyScene,
-            start: DAILY_MOTION.desktopStart,
-            end: () => `+=${getDistance()}`,
-            scrub: DAILY_MOTION.scrub,
-            pin: dailyScene,
-            anticipatePin: DAILY_MOTION.anticipatePin,
-            invalidateOnRefresh: true,
-          },
-        });
+        cleanups.push(createDesktopDailyScene(dailyScene, dailyViewport, dailyTrack));
 
-        dailyDesktopTrigger = animation.scrollTrigger ?? null;
-
-        const dragProxy = document.createElement("div");
-        let dragStartOffset = 0;
-
-        const draggable = Draggable.create(dragProxy, {
-          trigger: dailyViewport,
-          type: "x",
-          allowContextMenu: true,
-          zIndexBoost: false,
-          onPress() {
-            dragStartOffset = Math.abs(
-              Number(gsap.getProperty(dailyTrack, "x")) || 0,
-            );
-            dailyViewport.style.cursor = "grabbing";
-            gsap.set(dragProxy, { x: 0 });
-          },
-          onDrag() {
-            syncSceneOffset(dragStartOffset - this.x);
-          },
-          onRelease() {
-            dailyViewport.style.cursor = "";
-          },
-        })[0];
+        if (seasonalViewport && seasonalViewport.scrollWidth > seasonalViewport.clientWidth) {
+          cleanups.push(createDesktopScrollableRail(seasonalViewport));
+        }
 
         return () => {
-          draggable.kill();
-          dailyDesktopTrigger = null;
+          cleanups.forEach((cleanup) => cleanup());
         };
       });
 
       return () => {
         mm.revert();
-        cleanups.forEach((cleanup) => cleanup());
       };
     },
     { scope: rootRef },

@@ -23,7 +23,8 @@ export function HomePageClient() {
   return (
     <main
       ref={rootRef}
-      className="relative overflow-x-clip bg-[var(--color-cream)] text-[var(--color-brown-deep)]"
+      data-page-theme="hero"
+      className="page-theme-shell relative overflow-x-clip text-[var(--page-foreground)]"
     >
       <SiteHeader />
       <HeroScene />

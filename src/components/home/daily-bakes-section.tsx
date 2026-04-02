@@ -14,23 +14,18 @@ import {
 } from "@/components/home/section-copy";
 import { siteData } from "@/data/site";
 
-const seasonLabels = ["Wiosna", "Lato", "Jesień", "Zima"] as const;
-
 const dailyMeta = [
   {
     icon: Clock3,
-    label: "Dzisiaj",
-    value: siteData.hours,
+    ...siteData.daily.meta[0],
   },
   {
     icon: Sparkles,
-    label: "Na tablicy",
-    value: `${siteData.dailyBakes.length} pozycji dnia`,
+    ...siteData.daily.meta[1],
   },
   {
     icon: MapPin,
-    label: "Miejsce",
-    value: "Kraków, osiedlowa piekarnia",
+    ...siteData.daily.meta[2],
   },
 ] as const;
 
@@ -50,14 +45,10 @@ export function DailyBakesSection() {
             <div className="grid gap-8">
               <div className="grid gap-5 lg:grid-cols-[minmax(0,0.7fr)_minmax(18rem,0.3fr)] lg:items-end">
                 <div className="max-w-[42rem] space-y-4">
-                  <SectionKicker>Co dziś pieczemy</SectionKicker>
-                  <SectionTitle>
-                    Codzienna tablica wypieków pokazuje, co dziś trafia do pieca i
-                    na ladę.
-                  </SectionTitle>
+                  <SectionKicker>{siteData.daily.eyebrow}</SectionKicker>
+                  <SectionTitle>{siteData.daily.title}</SectionTitle>
                   <SectionLead className="max-w-2xl">
-                    Najpierw pokazujemy to, co dziś trafia na ladę, a niżej osobno
-                    zbieramy sezonowe smaki i powroty, na które warto czekać.
+                    {siteData.daily.description}
                   </SectionLead>
                 </div>
 
@@ -120,13 +111,12 @@ export function DailyBakesSection() {
 
               <div className="grid gap-5 border-t border-[rgba(79,45,30,0.08)] pt-6 lg:grid-cols-[minmax(0,0.46fr)_minmax(0,0.54fr)] lg:items-start">
                 <div className="max-w-[28rem] space-y-3">
-                  <SectionKicker>Sezonowość</SectionKicker>
+                  <SectionKicker>{siteData.daily.seasonalEyebrow}</SectionKicker>
                   <SectionTitle className="text-[2rem] sm:text-[2.35rem]">
-                    Sezonowe smaki dostają własny rytm i własną karuzelę.
+                    {siteData.daily.seasonalTitle}
                   </SectionTitle>
                   <SectionLead className="text-[0.98rem]">
-                    Wiosną i latem lżej, jesienią i zimą bardziej otulająco.
-                    Dzięki temu strona żyje razem z piekarnią.
+                    {siteData.daily.seasonalDescription}
                   </SectionLead>
                 </div>
 
@@ -141,10 +131,10 @@ export function DailyBakesSection() {
                         className="w-[82vw] max-w-[21rem] shrink-0 snap-start bg-[rgba(255,248,241,0.82)] p-6 shadow-[0_20px_60px_rgba(79,45,30,0.08)] sm:w-[22rem] lg:w-[24rem]"
                       >
                         <SectionKicker className="tracking-[0.24em]">
-                          {seasonLabels[index] ?? "Sezon"}
+                          {siteData.daily.seasonLabels[index] ?? "Sezon"}
                         </SectionKicker>
                         <SectionTitle className="mt-4 text-[2rem] leading-none sm:text-[2rem]">
-                          {seasonLabels[index] ?? "Sezon"}
+                          {siteData.daily.seasonLabels[index] ?? "Sezon"}
                         </SectionTitle>
                         <p className="mt-4 text-sm leading-6 text-[var(--color-brown-soft)]">
                           {item}
