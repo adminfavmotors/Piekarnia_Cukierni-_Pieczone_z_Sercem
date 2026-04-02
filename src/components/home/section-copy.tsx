@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
 
@@ -6,15 +6,17 @@ type SectionKickerProps = {
   children: ReactNode;
   className?: string;
   tone?: "accent" | "light";
-};
+} & ComponentPropsWithoutRef<"p">;
 
 export function SectionKicker({
   children,
   className,
   tone = "accent",
+  ...props
 }: SectionKickerProps) {
   return (
     <p
+      {...props}
       className={cn(
         "text-xs font-semibold uppercase tracking-[0.28em] sm:text-sm",
         tone === "accent"
@@ -33,16 +35,18 @@ type SectionTitleProps = {
   className?: string;
   tone?: "default" | "light";
   size?: "section" | "display";
-};
+} & ComponentPropsWithoutRef<"h2">;
 
 export function SectionTitle({
   children,
   className,
   tone = "default",
   size = "section",
+  ...props
 }: SectionTitleProps) {
   return (
     <h2
+      {...props}
       className={cn(
         "font-display tracking-[-0.05em]",
         size === "section"
@@ -63,15 +67,17 @@ type SectionLeadProps = {
   children: ReactNode;
   className?: string;
   tone?: "default" | "light";
-};
+} & ComponentPropsWithoutRef<"p">;
 
 export function SectionLead({
   children,
   className,
   tone = "default",
+  ...props
 }: SectionLeadProps) {
   return (
     <p
+      {...props}
       className={cn(
         "text-base leading-7 sm:text-lg",
         tone === "light"

@@ -12,6 +12,18 @@
   --header-bg: rgba(255, 248, 241, 0.72);
   --background: var(--color-cream);
   --foreground: var(--color-brown-deep);
+  --layout-max-width: 92rem;
+  --radius-scene: 2.4rem;
+  --radius-scene-lg: 2.5rem;
+  --radius-callout: 1.8rem;
+  --radius-card: 1.5rem;
+  --shadow-scene: 0 40px 120px rgba(79, 45, 30, 0.14);
+  --shadow-scene-soft: 0 40px 120px rgba(79, 45, 30, 0.12);
+  --shadow-scene-dark: 0 44px 130px rgba(20, 8, 5, 0.32);
+  --shadow-callout: 0 20px 60px rgba(79, 45, 30, 0.12);
+  --shadow-callout-soft: 0 18px 40px rgba(79, 45, 30, 0.06);
+  --shadow-callout-dark: 0 20px 60px rgba(0, 0, 0, 0.18);
+  --shadow-card: 0 24px 60px rgba(79, 45, 30, 0.08);
 }
 
 @theme inline {

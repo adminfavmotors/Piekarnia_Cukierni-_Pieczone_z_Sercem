@@ -19,6 +19,11 @@ export function useHomePageMotion(rootRef: RootRef) {
         return;
       }
 
+      const selectOne = <T extends Element>(selector: string) =>
+        root.querySelector<T>(selector);
+      const selectAll = <T extends Element>(selector: string) =>
+        Array.from(root.querySelectorAll<T>(selector));
+
       const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
@@ -28,7 +33,7 @@ export function useHomePageMotion(rootRef: RootRef) {
       };
 
       const desktopMedia = gsap.matchMedia();
-      const themeSections = gsap.utils.toArray<HTMLElement>("[data-theme-section]");
+      const themeSections = selectAll<HTMLElement>("[data-theme-section]");
       const initialTheme =
         themeSections[0]?.dataset.themeSection?.trim() || "hero";
 
@@ -56,66 +61,30 @@ export function useHomePageMotion(rootRef: RootRef) {
         };
       }
 
-      const heroIntro = HOME_MOTION.heroIntro;
       const heroScroll = HOME_MOTION.heroScroll;
+      const heroLabel = selectOne<HTMLElement>("[data-hero-label]");
+      const heroCopy = selectOne<HTMLElement>("[data-hero-copy]");
+      const heroActions = selectOne<HTMLElement>("[data-hero-actions]");
+      const heroMainImage = selectOne<HTMLElement>("[data-hero-main-image]");
+      const heroDetailCards = selectAll<HTMLElement>("[data-hero-detail-card]");
+      const heroScrollNote = selectOne<HTMLElement>("[data-hero-scroll-note]");
 
-      const heroTimeline = gsap.timeline({
-        defaults: {
-          duration: heroIntro.duration,
-          ease: heroIntro.ease,
-        },
-      });
+      [
+        heroLabel,
+        heroCopy,
+        heroActions,
+        heroMainImage,
+        heroScrollNote,
+        ...heroDetailCards,
+      ]
+        .filter(Boolean)
+        .forEach((element) => {
+          gsap.set(element, {
+            clearProps: "all",
+          });
+        });
 
-      heroTimeline
-        .from("[data-hero-label]", {
-          opacity: 0,
-          y: heroIntro.labelY,
-        })
-        .from(
-          "[data-hero-copy]",
-          {
-            opacity: 0,
-            y: heroIntro.copyY,
-          },
-          "-=0.55",
-        )
-        .from(
-          "[data-hero-actions]",
-          {
-            opacity: 0,
-            y: heroIntro.actionsY,
-          },
-          "-=0.55",
-        )
-        .from(
-          "[data-hero-photo-main]",
-          {
-            opacity: 0,
-            y: heroIntro.mediaY,
-            scale: heroIntro.mediaScale,
-          },
-          "-=0.75",
-        )
-        .from(
-          "[data-hero-detail-card]",
-          {
-            opacity: 0,
-            y: heroIntro.detailY,
-            scale: heroIntro.detailScale,
-            stagger: heroIntro.detailStagger,
-          },
-          "-=0.55",
-        )
-        .from(
-          "[data-hero-scroll-note]",
-          {
-            opacity: 0,
-            y: heroIntro.scrollNoteY,
-          },
-          "-=0.35",
-        );
-
-      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => {
+      selectAll<HTMLElement>("[data-reveal]").forEach((element) => {
         gsap.fromTo(
           element,
           {
@@ -136,9 +105,7 @@ export function useHomePageMotion(rootRef: RootRef) {
         );
       });
 
-      gsap.utils
-        .toArray<HTMLElement>("[data-stagger-group]")
-        .forEach((group) => {
+      selectAll<HTMLElement>("[data-stagger-group]").forEach((group) => {
           const items = group.querySelectorAll<HTMLElement>("[data-stagger-item]");
 
           if (!items.length) {
@@ -167,68 +134,100 @@ export function useHomePageMotion(rootRef: RootRef) {
         });
 
       desktopMedia.add(HOME_MOTION.desktopBreakpoint, () => {
-        gsap.to("[data-hero-main-image]", {
-          scale: heroScroll.imageScale,
-          yPercent: heroScroll.imageYPercent,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='hero']",
-            start: "top top",
-            end: "bottom top",
-            scrub: 0.9,
-          },
-        });
+        const heroSection = selectOne<HTMLElement>("[data-theme-section='hero']");
+        const heroLayerCopy = selectOne<HTMLElement>("[data-hero-layer='copy']");
+        const heroBackdrop = selectOne<HTMLElement>("[data-hero-backdrop]");
+        const heroFloor = selectOne<HTMLElement>("[data-hero-floor]");
 
-        gsap.to("[data-hero-layer='copy']", {
-          yPercent: heroScroll.copyYPercent,
-          opacity: heroScroll.copyOpacity,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='hero']",
-            start: "top top",
-            end: "bottom top",
-            scrub: 0.85,
-          },
-        });
+        if (heroSection && heroMainImage) {
+          gsap.to(heroMainImage, {
+            scale: heroScroll.imageScale,
+            yPercent: heroScroll.imageYPercent,
+            ease: "none",
+            scrollTrigger: {
+              trigger: heroSection,
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.9,
+            },
+          });
+        }
 
-        gsap.to("[data-hero-detail-card]", {
-          yPercent: heroScroll.cardYPercent,
-          stagger: heroScroll.cardStagger,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='hero']",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1,
-          },
-        });
+        if (heroSection && heroLayerCopy) {
+          gsap.to(heroLayerCopy, {
+            yPercent: heroScroll.copyYPercent,
+            opacity: heroScroll.copyOpacity,
+            ease: "none",
+            scrollTrigger: {
+              trigger: heroSection,
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.85,
+            },
+          });
+        }
 
-        gsap.to("[data-hero-backdrop]", {
-          opacity: heroScroll.backdropOpacity,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='hero']",
-            start: "top top",
-            end: "bottom top",
-            scrub: 0.8,
-          },
-        });
+        if (heroSection && heroDetailCards.length) {
+          gsap.to(heroDetailCards, {
+            yPercent: heroScroll.cardYPercent,
+            stagger: heroScroll.cardStagger,
+            ease: "none",
+            scrollTrigger: {
+              trigger: heroSection,
+              start: "top top",
+              end: "bottom top",
+              scrub: 1,
+            },
+          });
+        }
 
-        gsap.to("[data-hero-floor]", {
-          opacity: 1,
-          yPercent: heroScroll.floorYPercent,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "[data-theme-section='hero']",
-            start: "top 20%",
-            end: "bottom top",
-            scrub: 0.85,
-          },
-        });
+        if (heroSection && heroBackdrop) {
+          gsap.to(heroBackdrop, {
+            opacity: heroScroll.backdropOpacity,
+            ease: "none",
+            scrollTrigger: {
+              trigger: heroSection,
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.8,
+            },
+          });
+        }
+
+        if (heroSection && heroFloor) {
+          gsap.to(heroFloor, {
+            opacity: 1,
+            yPercent: heroScroll.floorYPercent,
+            ease: "none",
+            scrollTrigger: {
+              trigger: heroSection,
+              start: "top 20%",
+              end: "bottom top",
+              scrub: 0.85,
+            },
+          });
+        }
 
         HOME_SCENES.forEach((scene) => {
-          gsap.fromTo(
+          const sectionEl = selectOne<HTMLElement>(
+            `[data-theme-section='${scene.section}']`,
+          );
+          const panelEl = selectOne<HTMLElement>(
             `[data-scene-panel='${scene.panel}']`,
+          );
+          const photoEl = selectOne<HTMLElement>(
+            `[data-scene-photo='${scene.section}']`,
+          );
+          const floorEl = scene.floorSelector
+            ? selectOne<HTMLElement>(scene.floorSelector)
+            : null;
+
+          if (!sectionEl || !panelEl) {
+            return;
+          }
+
+          gsap.fromTo(
+            panelEl,
             {
               y: scene.fromY,
               scale: scene.fromScale,
@@ -240,7 +239,7 @@ export function useHomePageMotion(rootRef: RootRef) {
               clipPath: `inset(0% 0% 0% 0% round ${scene.radius})`,
               ease: "none",
               scrollTrigger: {
-                trigger: `[data-theme-section='${scene.section}']`,
+                trigger: sectionEl,
                 start: HOME_MOTION.sceneTransition.start,
                 end: HOME_MOTION.sceneTransition.end,
                 scrub: scene.panelScrub,
@@ -248,25 +247,27 @@ export function useHomePageMotion(rootRef: RootRef) {
             },
           );
 
-          gsap.to(`[data-scene-photo='${scene.section}']`, {
-            yPercent: scene.photoYPercent,
-            scale: scene.photoScale,
-            ease: "none",
-            scrollTrigger: {
-              trigger: `[data-theme-section='${scene.section}']`,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: scene.photoScrub,
-            },
-          });
+          if (photoEl) {
+            gsap.to(photoEl, {
+              yPercent: scene.photoYPercent,
+              scale: scene.photoScale,
+              ease: "none",
+              scrollTrigger: {
+                trigger: sectionEl,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: scene.photoScrub,
+              },
+            });
+          }
 
-          if (scene.floorSelector) {
-            gsap.to(scene.floorSelector, {
+          if (floorEl) {
+            gsap.to(floorEl, {
               opacity: 1,
               yPercent: -12,
               ease: "none",
               scrollTrigger: {
-                trigger: `[data-theme-section='${scene.section}']`,
+                trigger: sectionEl,
                 start: HOME_MOTION.floorTransition.start,
                 end: HOME_MOTION.floorTransition.end,
                 scrub: HOME_MOTION.floorTransition.scrub,
