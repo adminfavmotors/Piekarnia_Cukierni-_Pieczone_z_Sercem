@@ -16,6 +16,14 @@
   --foreground: var(--color-brown-deep);
   --surface-light: rgba(255, 248, 241, 0.94);
   --surface-strong: rgba(255, 248, 241, 0.98);
+  --type-kicker: clamp(0.62rem, 0.58rem + 0.18vw, 0.72rem);
+  --type-title-section: clamp(1.85rem, 1.55rem + 1.1vw, 2.8rem);
+  --type-title-display: clamp(2.2rem, 1.7rem + 2.6vw, 4.5rem);
+  --type-title-callout: clamp(1.35rem, 1.15rem + 0.7vw, 1.85rem);
+  --type-body-lead: clamp(0.94rem, 0.9rem + 0.22vw, 1.02rem);
+  --type-body-copy: clamp(0.92rem, 0.89rem + 0.16vw, 0.98rem);
+  --type-card-title: clamp(1.45rem, 1.28rem + 0.72vw, 1.78rem);
+  --type-hero-title: clamp(2.25rem, 1.8rem + 2.4vw, 4.9rem);
   --layout-max-width: 92rem;
   --radius-scene: 2.4rem;
   --radius-scene-lg: 2.5rem;

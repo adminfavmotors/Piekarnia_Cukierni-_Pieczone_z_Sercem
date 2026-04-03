@@ -2,6 +2,15 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
 
+const sectionTitleSizeClasses = {
+  section:
+    "[font-size:var(--type-title-section)] [line-height:0.98]",
+  display:
+    "[font-size:var(--type-title-display)] [line-height:0.92]",
+  callout:
+    "[font-size:var(--type-title-callout)] [line-height:1.02]",
+} as const;
+
 type SectionKickerProps = {
   children: ReactNode;
   className?: string;
@@ -15,15 +24,15 @@ export function SectionKicker({
   ...props
 }: SectionKickerProps) {
   return (
-      <p
-        {...props}
-        className={cn(
-          "text-[0.68rem] font-bold uppercase leading-none tracking-[0.22em] sm:text-[0.74rem]",
-          tone === "accent"
-            ? "text-[var(--color-accent)]"
-            : "text-[rgba(255,248,241,0.82)]",
-          className,
-        )}
+    <p
+      {...props}
+      className={cn(
+        "[font-size:var(--type-kicker)] font-bold uppercase leading-none tracking-[0.22em]",
+        tone === "accent"
+          ? "text-[var(--color-accent)]"
+          : "text-[rgba(255,248,241,0.82)]",
+        className,
+      )}
     >
       {children}
     </p>
@@ -34,7 +43,7 @@ type SectionTitleProps = {
   children: ReactNode;
   className?: string;
   tone?: "default" | "light";
-  size?: "section" | "display";
+  size?: keyof typeof sectionTitleSizeClasses;
   as?: "h1" | "h2" | "h3" | "p" | "div";
 } & ComponentPropsWithoutRef<"h2">;
 
@@ -49,18 +58,16 @@ export function SectionTitle({
   const Tag = as;
 
   return (
-      <Tag
-        {...props}
-        className={cn(
-          "text-balance font-display tracking-[-0.045em]",
-          size === "section"
-            ? "text-[2.2rem] leading-[0.98] sm:text-[2.85rem] lg:text-[3.3rem]"
-            : "text-[2.7rem] leading-[0.92] sm:text-[4.25rem] lg:text-[5.35rem]",
-          tone === "light"
-            ? "text-[var(--color-cream-light)]"
-            : "text-[var(--color-brown-ink)]",
-          className,
-        )}
+    <Tag
+      {...props}
+      className={cn(
+        "text-balance font-display tracking-[-0.045em]",
+        sectionTitleSizeClasses[size],
+        tone === "light"
+          ? "text-[var(--color-cream-light)]"
+          : "text-[var(--color-brown-ink)]",
+        className,
+      )}
     >
       {children}
     </Tag>
@@ -80,15 +87,15 @@ export function SectionLead({
   ...props
 }: SectionLeadProps) {
   return (
-      <p
-        {...props}
-        className={cn(
-          "text-pretty text-[0.98rem] leading-7 sm:text-[1.05rem] sm:leading-8",
-          tone === "light"
-            ? "text-[rgba(255,248,241,0.9)]"
-            : "text-[var(--color-brown-muted)]",
-          className,
-        )}
+    <p
+      {...props}
+      className={cn(
+        "text-pretty [font-size:var(--type-body-lead)] leading-7 sm:leading-[1.9]",
+        tone === "light"
+          ? "text-[rgba(255,248,241,0.9)]"
+          : "text-[var(--color-brown-muted)]",
+        className,
+      )}
     >
       {children}
     </p>

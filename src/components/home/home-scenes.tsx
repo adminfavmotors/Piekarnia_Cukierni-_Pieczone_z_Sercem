@@ -119,7 +119,7 @@ export function HeroScene() {
                 </SectionKicker>
               </div>
               <div data-hero-copy className="mt-4 space-y-4">
-                <h1 className="text-balance max-w-[10ch] font-display text-[2.7rem] leading-[0.9] tracking-[-0.07em] text-white drop-shadow-[0_12px_28px_rgba(20,8,5,0.34)] sm:text-[4.5rem] lg:text-[5.45rem]">
+                <h1 className="text-balance max-w-[10ch] font-display [font-size:var(--type-hero-title)] leading-[0.92] tracking-[-0.07em] text-white drop-shadow-[0_12px_28px_rgba(20,8,5,0.34)]">
                   {siteData.hero.title}
                 </h1>
                 <SectionLead
@@ -253,7 +253,7 @@ export function TasteScene() {
                           <SectionKicker className="tracking-[0.24em]">
                             {label}
                           </SectionKicker>
-                          <SectionTitle as="h3" className="text-3xl leading-none sm:text-3xl">
+                          <SectionTitle as="h3" size="callout">
                             {title}
                           </SectionTitle>
                           <p className="text-pretty text-[0.96rem] leading-6 text-[var(--color-brown-muted)]">

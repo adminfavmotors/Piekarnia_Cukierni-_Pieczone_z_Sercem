@@ -281,7 +281,8 @@ export function DailyBakesSection() {
                         </SectionKicker>
                         <SectionTitle
                           as="h3"
-                          className="mt-4 text-[2rem] leading-none sm:text-[2rem]"
+                          size="callout"
+                          className="mt-4"
                         >
                           {siteData.daily.seasonLabels[index] ?? "Sezon"}
                         </SectionTitle>

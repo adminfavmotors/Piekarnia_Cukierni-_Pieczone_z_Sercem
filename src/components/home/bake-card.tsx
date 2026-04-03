@@ -24,11 +24,11 @@ export function BakeCard({ bake }: BakeCardProps) {
 
           <div className="space-y-3">
             <div className="min-h-[4.8rem]">
-              <h3 className="text-balance font-display text-[1.8rem] leading-[0.98] tracking-[-0.03em] text-[var(--color-brown-ink)] sm:text-[1.95rem]">
+              <h3 className="text-balance font-display [font-size:var(--type-card-title)] leading-[1] tracking-[-0.03em] text-[var(--color-brown-ink)]">
                 {bake.name}
               </h3>
             </div>
-            <p className="text-pretty min-h-[6rem] max-w-[19rem] text-[0.95rem] leading-6 text-[var(--color-brown-muted)] sm:min-h-[6.5rem] sm:max-w-[20rem] sm:text-[0.98rem]">
+            <p className="text-pretty min-h-[6rem] max-w-[19rem] [font-size:var(--type-body-copy)] leading-6 text-[var(--color-brown-muted)] sm:min-h-[6.5rem] sm:max-w-[20rem]">
               {bake.description}
             </p>
           </div>
