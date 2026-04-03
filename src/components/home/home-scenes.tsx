@@ -142,56 +142,70 @@ export function HeroScene() {
               </div>
             </div>
 
-            <div className="relative z-10 hidden min-h-[23rem] lg:block">
-              <div
-                data-hero-detail-card
-                className="absolute right-0 top-0 w-[15rem] overflow-hidden rounded-[2rem] border border-[rgba(255,248,241,0.16)] bg-[rgba(255,248,241,0.14)] p-4 shadow-[0_22px_54px_rgba(0,0,0,0.16)] backdrop-blur-[4px]"
-              >
-                <div className="relative aspect-[0.86] overflow-hidden rounded-[1.4rem]">
-                  <Image
-                    src={bakeryMedia.breadBasket}
-                    alt="Świeże chleby i bułki w wiklinowym koszu"
-                    fill
-                    loading="lazy"
-                    quality={SCENE_IMAGE_QUALITY}
-                    placeholder="blur"
-                    className="object-cover"
-                    sizes={DESKTOP_DETAIL_IMAGE_SIZES}
-                  />
-                </div>
-                <div className="mt-4">
-                  <SectionKicker
-                    tone="light"
-                    className="text-[0.7rem] tracking-[0.2em] text-[rgba(255,248,241,0.7)]"
-                  >
-                    {siteData.hero.breadLabel}
-                  </SectionKicker>
-                  <p className="mt-2 text-[0.94rem] leading-6 text-[rgba(255,248,241,0.92)]">
-                    {siteData.hero.breadDescription}
-                  </p>
-                </div>
-              </div>
-
-              <div
-                data-hero-detail-card
-                className="absolute bottom-0 right-12 max-w-[18rem] rounded-[2rem] border border-[rgba(255,248,241,0.16)] bg-[rgba(36,18,12,0.52)] px-5 py-5 shadow-[0_22px_56px_rgba(0,0,0,0.18)] backdrop-blur-[6px]"
-              >
-                <SectionKicker
-                  tone="light"
-                  className="text-[0.7rem] tracking-[0.22em] text-[rgba(255,248,241,0.7)]"
+            <div className="relative z-10 hidden lg:flex lg:justify-end">
+              <div className="grid w-[21rem] gap-4">
+                <div
+                  data-hero-detail-slot="primary"
+                  className="flex justify-end"
                 >
-                  {siteData.hero.todayLabel}
-                </SectionKicker>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {siteData.dailyBakes.slice(0, 3).map((bake) => (
-                    <Pill key={bake.name} tone="darkGlass">
-                      {bake.category}
-                    </Pill>
-                  ))}
+                  <div
+                    data-hero-detail-motion="primary"
+                    className="w-[15rem] overflow-hidden rounded-[2rem] border border-[rgba(255,248,241,0.16)] bg-[rgba(255,248,241,0.14)] p-4 shadow-[0_22px_54px_rgba(0,0,0,0.16)] backdrop-blur-[4px]"
+                  >
+                    <div className="relative aspect-[0.86] overflow-hidden rounded-[1.4rem]">
+                      <Image
+                        src={bakeryMedia.breadBasket}
+                        alt="Świeże chleby i bułki w wiklinowym koszu"
+                        fill
+                        loading="lazy"
+                        quality={SCENE_IMAGE_QUALITY}
+                        placeholder="blur"
+                        className="object-cover"
+                        sizes={DESKTOP_DETAIL_IMAGE_SIZES}
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <SectionKicker
+                        tone="light"
+                        className="text-[0.7rem] tracking-[0.2em] text-[rgba(255,248,241,0.7)]"
+                      >
+                        {siteData.hero.breadLabel}
+                      </SectionKicker>
+                      <p className="mt-2 text-[0.94rem] leading-6 text-[rgba(255,248,241,0.92)]">
+                        {siteData.hero.breadDescription}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <p className="mt-4 text-[0.94rem] leading-6 text-[rgba(255,248,241,0.9)]">
-                  {siteData.city}, {siteData.hours}
-                </p>
+
+                <div
+                  data-hero-detail-slot="secondary"
+                  className="flex justify-start pl-6"
+                >
+                  <div className="-mt-10 w-full max-w-[18rem] pb-10">
+                    <div
+                      data-hero-detail-motion="secondary"
+                      className="rounded-[2rem] border border-[rgba(255,248,241,0.16)] bg-[rgba(36,18,12,0.52)] px-5 py-5 shadow-[0_22px_56px_rgba(0,0,0,0.18)] backdrop-blur-[6px]"
+                    >
+                      <SectionKicker
+                        tone="light"
+                        className="text-[0.7rem] tracking-[0.22em] text-[rgba(255,248,241,0.7)]"
+                      >
+                        {siteData.hero.todayLabel}
+                      </SectionKicker>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {siteData.dailyBakes.slice(0, 3).map((bake) => (
+                          <Pill key={bake.name} tone="darkGlass">
+                            {bake.category}
+                          </Pill>
+                        ))}
+                      </div>
+                      <p className="mt-4 text-[0.94rem] leading-6 text-[rgba(255,248,241,0.9)]">
+                        {siteData.city}, {siteData.hours}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -200,7 +214,7 @@ export function HeroScene() {
             <Pill
               tone="darkGlass"
               className="max-w-[14rem] border border-[rgba(255,248,241,0.18)] bg-[rgba(255,248,241,0.12)] px-4 py-2 text-[0.68rem] tracking-[0.18em] backdrop-blur-[4px] sm:max-w-[18rem] sm:text-[0.72rem]"
-              data-hero-detail-card
+              data-hero-detail-pill
             >
               {siteData.hero.freshLabel}
             </Pill>

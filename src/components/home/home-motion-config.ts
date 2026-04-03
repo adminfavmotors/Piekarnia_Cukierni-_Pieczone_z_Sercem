@@ -7,26 +7,26 @@ export const HOME_MOTION = {
   reveal: {
     y: 34,
     duration: 0.8,
-    start: "top 82%",
     ease: "power3.out",
   },
   stagger: {
     y: 24,
     duration: 0.72,
     each: 0.06,
-    start: "top 80%",
     ease: "power3.out",
   },
   heroScroll: {
     start: "top top",
     end: "bottom top",
     scrub: 0.8,
+    invalidateOnRefresh: true,
     imageScale: 1.08,
     imageYPercent: -8,
     copyYPercent: -16,
     copyOpacity: 0.45,
-    cardYPercent: -14,
-    cardStagger: 0.06,
+    detailPrimaryYPercent: -12,
+    detailSecondaryYPercent: -16,
+    detailPillYPercent: -10,
     backdropOpacity: 0.72,
     floorYPercent: -10,
   },
@@ -34,11 +34,7 @@ export const HOME_MOTION = {
     start: "top 92%",
     end: "top 24%",
     scrub: 0.82,
-  },
-  floorTransition: {
-    start: "top 24%",
-    end: "bottom top",
-    scrub: 0.85,
+    invalidateOnRefresh: true,
   },
 } as const;
 
@@ -87,10 +83,3 @@ export const HOME_SCENES: readonly HomeSceneConfig[] = [
     floorSelector: "[data-heart-floor]",
   },
 ];
-
-export const DAILY_MOTION = {
-  desktopBreakpoint: "(min-width: 1024px)",
-  desktopStart: "top top+=96",
-  scrub: true,
-  anticipatePin: 1,
-} as const;
