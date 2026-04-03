@@ -78,9 +78,9 @@ export function HeroScene() {
     <section
       id="top"
       data-theme-section="hero"
-      className="relative isolate min-h-[100svh] overflow-hidden sm:min-h-[104svh] lg:min-h-[124svh]"
+      className="relative isolate min-h-[100svh] overflow-x-hidden overflow-y-visible sm:min-h-[104svh] lg:min-h-[124svh]"
     >
-      <div className="relative min-h-[100svh] overflow-hidden sm:min-h-[104svh] lg:sticky lg:top-0 lg:h-svh lg:min-h-0">
+      <div className="relative min-h-[100svh] overflow-x-hidden overflow-y-visible sm:min-h-[104svh] lg:sticky lg:top-0 lg:min-h-svh">
         <div data-hero-main-image className="absolute inset-0 scale-[1.01]">
           <Image
             src={bakeryMedia.heroBerries}
@@ -104,7 +104,7 @@ export function HeroScene() {
           className="absolute inset-x-0 bottom-0 h-[34vh] translate-y-[10%] bg-[linear-gradient(180deg,rgba(36,18,12,0)_0%,rgba(36,18,12,0.18)_30%,rgba(255,248,241,0.76)_100%)] opacity-0"
         />
 
-        <PageContainer className="relative flex min-h-[100svh] flex-col gap-7 pb-5 pt-10 sm:min-h-[104svh] sm:gap-9 sm:pb-6 sm:pt-12 lg:h-full lg:min-h-0 lg:gap-8 lg:pb-8 lg:pt-16">
+        <PageContainer className="relative flex min-h-[100svh] flex-col gap-7 pb-5 pt-10 sm:min-h-[104svh] sm:gap-9 sm:pb-6 sm:pt-12 lg:min-h-svh lg:gap-8 lg:pb-8 lg:pt-16">
           <div className="grid gap-6 lg:grid-cols-[0.58fr_0.42fr] lg:items-start">
             <div
               data-hero-layer="copy"

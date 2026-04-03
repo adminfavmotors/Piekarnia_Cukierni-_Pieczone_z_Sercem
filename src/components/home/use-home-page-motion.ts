@@ -112,6 +112,61 @@ const getSceneMotionTargets = (
   };
 };
 
+const createSceneTimeline = (
+  scene: HomeScene,
+  sceneTargets: SceneMotionTargets,
+) => {
+  const sceneTimeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: sceneTargets.section,
+      start: HOME_MOTION.sceneTransition.start,
+      end: HOME_MOTION.sceneTransition.end,
+      scrub: HOME_MOTION.sceneTransition.scrub,
+      invalidateOnRefresh: HOME_MOTION.sceneTransition.invalidateOnRefresh,
+    },
+  });
+
+  sceneTimeline.fromTo(
+    sceneTargets.panel,
+    {
+      y: scene.fromY,
+      scale: scene.fromScale,
+      opacity: scene.fromOpacity,
+    },
+    {
+      y: 0,
+      scale: 1,
+      opacity: 1,
+      ease: "none",
+    },
+    0,
+  );
+
+  if (sceneTargets.photo) {
+    sceneTimeline.to(
+      sceneTargets.photo,
+      {
+        yPercent: scene.photoYPercent,
+        scale: scene.photoScale,
+        ease: "none",
+      },
+      0,
+    );
+  }
+
+  if (sceneTargets.floor) {
+    sceneTimeline.to(
+      sceneTargets.floor,
+      {
+        opacity: 1,
+        yPercent: scene.floorYPercent ?? -12,
+        ease: "none",
+      },
+      0.06,
+    );
+  }
+};
+
 export function useHomePageMotion(rootRef: RootRef) {
   useGSAP(
     () => {
@@ -366,57 +421,7 @@ export function useHomePageMotion(rootRef: RootRef) {
           }
 
           saveScrollTriggerStyles(sceneTargets.animatedElements);
-
-          const sceneTimeline = gsap.timeline({
-            scrollTrigger: {
-              trigger: sceneTargets.section,
-              start: HOME_MOTION.sceneTransition.start,
-              end: HOME_MOTION.sceneTransition.end,
-              scrub: HOME_MOTION.sceneTransition.scrub,
-              invalidateOnRefresh:
-                HOME_MOTION.sceneTransition.invalidateOnRefresh,
-            },
-          });
-
-          sceneTimeline.fromTo(
-            sceneTargets.panel,
-            {
-              y: scene.fromY,
-              scale: scene.fromScale,
-              opacity: scene.fromOpacity,
-            },
-            {
-              y: 0,
-              scale: 1,
-              opacity: 1,
-              ease: "none",
-            },
-            0,
-          );
-
-          if (sceneTargets.photo) {
-            sceneTimeline.to(
-              sceneTargets.photo,
-              {
-                yPercent: scene.photoYPercent,
-                scale: scene.photoScale,
-                ease: "none",
-              },
-              0,
-            );
-          }
-
-          if (sceneTargets.floor) {
-            sceneTimeline.to(
-              sceneTargets.floor,
-              {
-                opacity: 1,
-                yPercent: scene.floorYPercent ?? -12,
-                ease: "none",
-              },
-              0.06,
-            );
-          }
+          createSceneTimeline(scene, sceneTargets);
         });
       });
 
