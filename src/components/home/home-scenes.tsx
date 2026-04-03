@@ -94,10 +94,10 @@ export function HeroScene() {
             sizes="100vw"
           />
         </div>
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(36,18,12,0.1)_0%,rgba(36,18,12,0.03)_28%,rgba(36,18,12,0.32)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(36,18,12,0.18)_0%,rgba(36,18,12,0.12)_26%,rgba(36,18,12,0.48)_100%)]" />
         <div
           data-hero-backdrop
-          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(36,18,12,0.22)_0%,rgba(36,18,12,0.04)_44%,rgba(36,18,12,0.14)_100%)] opacity-35"
+          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(36,18,12,0.4)_0%,rgba(36,18,12,0.12)_44%,rgba(36,18,12,0.22)_100%)] opacity-55"
         />
         <div
           data-hero-floor
@@ -119,12 +119,12 @@ export function HeroScene() {
                 </SectionKicker>
               </div>
               <div data-hero-copy className="mt-4 space-y-4">
-                <h1 className="font-display text-[2.9rem] leading-[0.88] tracking-[-0.07em] sm:text-6xl lg:text-[5.8rem]">
+                <h1 className="text-balance max-w-[10ch] font-display text-[2.7rem] leading-[0.9] tracking-[-0.07em] text-white drop-shadow-[0_12px_28px_rgba(20,8,5,0.34)] sm:text-[4.5rem] lg:text-[5.45rem]">
                   {siteData.hero.title}
                 </h1>
                 <SectionLead
                   tone="light"
-                  className="max-w-md text-[rgba(255,248,241,0.84)] sm:leading-7"
+                  className="max-w-md text-[rgba(255,248,241,0.94)] drop-shadow-[0_8px_18px_rgba(20,8,5,0.28)]"
                 >
                   {siteData.hero.description}
                 </SectionLead>
@@ -166,7 +166,7 @@ export function HeroScene() {
                   >
                     {siteData.hero.breadLabel}
                   </SectionKicker>
-                  <p className="mt-2 text-sm leading-6 text-[var(--color-cream-light)]">
+                  <p className="mt-2 text-[0.94rem] leading-6 text-[rgba(255,248,241,0.92)]">
                     {siteData.hero.breadDescription}
                   </p>
                 </div>
@@ -189,7 +189,7 @@ export function HeroScene() {
                     </Pill>
                   ))}
                 </div>
-                <p className="mt-4 text-sm leading-6 text-[rgba(255,248,241,0.82)]">
+                <p className="mt-4 text-[0.94rem] leading-6 text-[rgba(255,248,241,0.9)]">
                   {siteData.city}, {siteData.hours}
                 </p>
               </div>
@@ -243,7 +243,7 @@ export function TasteScene() {
                       key={label}
                       data-stagger-item
                       tone="warm"
-                      className="rounded-[1.6rem]"
+                      className="min-h-[14.5rem] rounded-[1.6rem]"
                     >
                       <div className="flex items-start gap-4">
                         <div className="rounded-full bg-[rgba(233,79,60,0.12)] p-3 text-[var(--color-accent)]">
@@ -256,7 +256,7 @@ export function TasteScene() {
                           <SectionTitle as="h3" className="text-3xl leading-none sm:text-3xl">
                             {title}
                           </SectionTitle>
-                          <p className="text-sm leading-6 text-[var(--color-brown-soft)]">
+                          <p className="text-pretty text-[0.96rem] leading-6 text-[var(--color-brown-muted)]">
                             {description}
                           </p>
                         </div>
@@ -283,7 +283,7 @@ export function TasteScene() {
               </div>
               <SceneCallout className="absolute -bottom-8 left-0 hidden max-w-[18rem] sm:left-8 lg:block">
                 <SectionKicker>{siteData.taste.photoKicker}</SectionKicker>
-                <p className="mt-3 text-sm leading-6 text-[var(--color-brown-soft)]">
+                <p className="mt-3 text-[0.96rem] leading-6 text-[var(--color-brown-muted)]">
                   {siteData.taste.photoDescription}
                 </p>
               </SceneCallout>
@@ -357,7 +357,7 @@ export function IngredientsScene() {
                           : "bg-[rgba(79,45,30,0.06)]"
                     }
                   >
-                    <p className="text-sm leading-6 text-[var(--color-brown-soft)]">
+                    <p className="text-pretty text-[0.96rem] leading-6 text-[var(--color-brown-muted)]">
                       {note}
                     </p>
                   </SceneCallout>
@@ -424,7 +424,7 @@ export function HeartScene() {
                 >
                   {siteData.heart.photoKicker}
                 </SectionKicker>
-                <p className="mt-3 text-sm leading-6 text-[rgba(255,248,241,0.82)]">
+                <p className="mt-3 text-[0.96rem] leading-6 text-[rgba(255,248,241,0.9)]">
                   {siteData.heart.photoDescription}
                 </p>
               </SceneCallout>
@@ -467,7 +467,7 @@ export function ContactSection() {
                 <p className="text-xs uppercase tracking-[0.24em] text-[rgba(255,248,241,0.6)]">
                   {siteData.contact.addressLabel}
                 </p>
-                <p className="mt-2 text-base leading-7">{siteData.address}</p>
+                <p className="mt-2 text-[1rem] leading-7 text-[rgba(255,248,241,0.94)]">{siteData.address}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -476,7 +476,7 @@ export function ContactSection() {
                 <p className="text-xs uppercase tracking-[0.24em] text-[rgba(255,248,241,0.6)]">
                   {siteData.contact.hoursLabel}
                 </p>
-                <p className="mt-2 text-base leading-7">{siteData.hours}</p>
+                <p className="mt-2 text-[1rem] leading-7 text-[rgba(255,248,241,0.94)]">{siteData.hours}</p>
               </div>
             </div>
             {siteData.phone ? (
@@ -501,9 +501,9 @@ export function ContactSection() {
                 <p className="text-xs uppercase tracking-[0.24em] text-[rgba(255,248,241,0.6)]">
                   {siteData.contact.atmosphereLabel}
                 </p>
-                <p className="mt-2 text-base leading-7">
-                  {siteData.contact.atmosphereValue}
-                </p>
+                  <p className="mt-2 text-[1rem] leading-7 text-[rgba(255,248,241,0.94)]">
+                    {siteData.contact.atmosphereValue}
+                  </p>
               </div>
             </div>
           </div>

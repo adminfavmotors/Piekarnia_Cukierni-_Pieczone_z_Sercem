@@ -15,15 +15,15 @@ export function SectionKicker({
   ...props
 }: SectionKickerProps) {
   return (
-    <p
-      {...props}
-      className={cn(
-        "text-xs font-semibold uppercase tracking-[0.28em] sm:text-sm",
-        tone === "accent"
-          ? "text-[var(--color-accent)]"
-          : "text-[rgba(255,248,241,0.72)]",
-        className,
-      )}
+      <p
+        {...props}
+        className={cn(
+          "text-[0.68rem] font-bold uppercase leading-none tracking-[0.22em] sm:text-[0.74rem]",
+          tone === "accent"
+            ? "text-[var(--color-accent)]"
+            : "text-[rgba(255,248,241,0.82)]",
+          className,
+        )}
     >
       {children}
     </p>
@@ -49,18 +49,18 @@ export function SectionTitle({
   const Tag = as;
 
   return (
-    <Tag
-      {...props}
-      className={cn(
-        "font-display tracking-[-0.05em]",
-        size === "section"
-          ? "text-4xl leading-[0.94] sm:text-5xl"
-          : "text-[2.8rem] leading-[0.92] sm:text-6xl",
-        tone === "light"
-          ? "text-[var(--color-cream-light)]"
-          : "text-[var(--color-brown-deep)]",
-        className,
-      )}
+      <Tag
+        {...props}
+        className={cn(
+          "text-balance font-display tracking-[-0.045em]",
+          size === "section"
+            ? "text-[2.2rem] leading-[0.98] sm:text-[2.85rem] lg:text-[3.3rem]"
+            : "text-[2.7rem] leading-[0.92] sm:text-[4.25rem] lg:text-[5.35rem]",
+          tone === "light"
+            ? "text-[var(--color-cream-light)]"
+            : "text-[var(--color-brown-ink)]",
+          className,
+        )}
     >
       {children}
     </Tag>
@@ -80,15 +80,15 @@ export function SectionLead({
   ...props
 }: SectionLeadProps) {
   return (
-    <p
-      {...props}
-      className={cn(
-        "text-base leading-7 sm:text-lg",
-        tone === "light"
-          ? "text-[rgba(255,248,241,0.82)]"
-          : "text-[var(--color-brown-soft)]",
-        className,
-      )}
+      <p
+        {...props}
+        className={cn(
+          "text-pretty text-[0.98rem] leading-7 sm:text-[1.05rem] sm:leading-8",
+          tone === "light"
+            ? "text-[rgba(255,248,241,0.9)]"
+            : "text-[var(--color-brown-muted)]",
+          className,
+        )}
     >
       {children}
     </p>

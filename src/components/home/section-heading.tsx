@@ -12,10 +12,10 @@ export function SectionHeading({
   description,
 }: SectionHeadingProps) {
   return (
-    <div className="max-w-2xl space-y-4">
+    <div className="max-w-[40rem] space-y-4">
       <SectionKicker>{eyebrow}</SectionKicker>
       <SectionTitle>{title}</SectionTitle>
-      {description ? <SectionLead className="max-w-xl">{description}</SectionLead> : null}
+      {description ? <SectionLead className="max-w-[34rem]">{description}</SectionLead> : null}
     </div>
   );
 }
