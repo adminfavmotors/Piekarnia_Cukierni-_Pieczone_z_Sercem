@@ -1,4 +1,9 @@
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  ComponentPropsWithoutRef,
+  ReactNode,
+} from "react";
 
 import { cn } from "@/lib/cn";
 
@@ -85,5 +90,28 @@ export function IconButton({
     >
       {children}
     </button>
+  );
+}
+
+type IconBadgeProps = {
+  children: ReactNode;
+  className?: string;
+} & ComponentPropsWithoutRef<"div">;
+
+export function IconBadge({
+  children,
+  className,
+  ...props
+}: IconBadgeProps) {
+  return (
+    <div
+      {...props}
+      className={cn(
+        "relative inline-flex items-center gap-2 rounded-full border border-[rgba(233,79,60,0.18)] bg-white/75 px-3 py-2 text-sm font-semibold text-[var(--color-brown-deep)]",
+        className,
+      )}
+    >
+      {children}
+    </div>
   );
 }

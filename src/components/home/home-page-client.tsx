@@ -11,14 +11,12 @@ import {
   SiteHeader,
   TasteScene,
 } from "@/components/home/home-scenes";
-import { useDailyBakesScene } from "@/components/home/use-daily-bakes-scene";
 import { useHomePageMotion } from "@/components/home/use-home-page-motion";
 
 export function HomePageClient() {
   const rootRef = useRef<HTMLElement | null>(null);
 
   useHomePageMotion(rootRef);
-  useDailyBakesScene(rootRef);
 
   return (
     <main

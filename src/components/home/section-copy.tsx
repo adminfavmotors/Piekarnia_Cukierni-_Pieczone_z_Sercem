@@ -35,6 +35,7 @@ type SectionTitleProps = {
   className?: string;
   tone?: "default" | "light";
   size?: "section" | "display";
+  as?: "h1" | "h2" | "h3" | "p" | "div";
 } & ComponentPropsWithoutRef<"h2">;
 
 export function SectionTitle({
@@ -42,10 +43,13 @@ export function SectionTitle({
   className,
   tone = "default",
   size = "section",
+  as = "h2",
   ...props
 }: SectionTitleProps) {
+  const Tag = as;
+
   return (
-    <h2
+    <Tag
       {...props}
       className={cn(
         "font-display tracking-[-0.05em]",
@@ -59,7 +63,7 @@ export function SectionTitle({
       )}
     >
       {children}
-    </h2>
+    </Tag>
   );
 }
 

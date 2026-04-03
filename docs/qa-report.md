@@ -28,6 +28,7 @@ Status: `PASS z uwagami nieblokującymi`
 - brak błędów konsoli w trakcie podstawowej weryfikacji
 - H1 renderuje się poprawnie
 - sekcja `Co dziś pieczemy` renderuje się z 6 kartami
+- sekcja `Co dziś pieczemy` działa jako płynna karuzela bez pinowania scrolla
 - branding w headerze renderuje się poprawnie
 - kontakt i główna struktura strony są obecne
 
@@ -35,15 +36,15 @@ Status: `PASS z uwagami nieblokującymi`
 
 Pliki wygenerowane podczas QA:
 
-- `web/qa-artifacts/desktop.png`
-- `web/qa-artifacts/mobile.png`
-- `web/qa-artifacts/report.json`
+- `qa-artifacts/desktop.png`
+- `qa-artifacts/mobile.png`
+- `qa-artifacts/report.json`
 
 ## Uwagi i ryzyka
 
-### 1. Like button jest na razie tylko warstwą UI
+### 1. Licznik polubień jest na razie tylko warstwą wizualną
 
-Przyciski polubień są już obecne wizualnie, ale nie mają jeszcze logiki stanu ani zapisu danych.
+Licznik polubień i ikona serca są obecne jako element wizualny, ale nie udają już aktywnej funkcji i nie mają logiki stanu ani zapisu danych.
 
 Ocena:
 
@@ -60,7 +61,7 @@ Architektura jest poprawna, ale część scen nadal ma charakter fundamentu, a n
 
 - hero
 - przejść między sekcjami
-- ekspozycji `Co dziś pieczemy`
+- ekspozycji `Co dziś pieczemy` i końcowego dopracowania karuzeli
 
 ### 4. Favicon i assety marki są jeszcze tymczasowe
 
@@ -73,4 +74,3 @@ Aktualna wersja jest stabilna technicznie i gotowa do następnego kroku po plani
 - poprawki po QA
 - dalszy visual polish
 - rozwój warstwy motion
-

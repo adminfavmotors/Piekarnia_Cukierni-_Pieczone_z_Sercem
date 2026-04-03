@@ -253,7 +253,7 @@ export function TasteScene() {
                           <SectionKicker className="tracking-[0.24em]">
                             {label}
                           </SectionKicker>
-                          <SectionTitle className="text-3xl leading-none sm:text-3xl">
+                          <SectionTitle as="h3" className="text-3xl leading-none sm:text-3xl">
                             {title}
                           </SectionTitle>
                           <p className="text-sm leading-6 text-[var(--color-brown-soft)]">

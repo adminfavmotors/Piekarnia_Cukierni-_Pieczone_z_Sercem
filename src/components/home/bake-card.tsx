@@ -4,7 +4,7 @@ import {
   CardInfoTile,
   CardSurface,
 } from "@/components/home/card-primitives";
-import { IconButton, Pill } from "@/components/home/home-ui";
+import { IconBadge, Pill } from "@/components/home/home-ui";
 import { siteData, type DailyBake } from "@/data/site";
 
 type BakeCardProps = {
@@ -30,10 +30,10 @@ export function BakeCard({ bake }: BakeCardProps) {
             </p>
           </div>
         </div>
-        <IconButton aria-label={`Polub ${bake.name}`}>
-          <Heart className="h-4 w-4" />
+        <IconBadge aria-label={`Liczba polubień: ${bake.likes}`}>
+          <Heart className="h-4 w-4" aria-hidden="true" />
           <span>{bake.likes}</span>
-        </IconButton>
+        </IconBadge>
       </div>
 
       <div className="mt-auto grid grid-cols-2 gap-3 pt-8 text-sm">
