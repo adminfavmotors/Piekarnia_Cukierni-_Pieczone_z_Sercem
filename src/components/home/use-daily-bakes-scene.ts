@@ -2,8 +2,8 @@
 
 import { useGSAP } from "@gsap/react";
 import { RefObject } from "react";
-import { Draggable } from "gsap/all";
 import { gsap } from "gsap";
+import { Draggable } from "gsap/dist/Draggable";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { DAILY_MOTION } from "@/components/home/home-motion-config";
@@ -12,53 +12,33 @@ gsap.registerPlugin(ScrollTrigger, Draggable, useGSAP);
 
 type RootRef = RefObject<HTMLElement | null>;
 
-function createDesktopScrollableRail(viewport: HTMLElement) {
-  const dragProxy = document.createElement("div");
-  let dragStartOffset = 0;
-
-  const draggable = Draggable.create(dragProxy, {
-    trigger: viewport,
-    type: "x",
-    allowContextMenu: true,
-    zIndexBoost: false,
-    minimumMovement: 6,
-    onPress() {
-      dragStartOffset = viewport.scrollLeft;
-      viewport.style.cursor = "grabbing";
-      gsap.set(dragProxy, { x: 0 });
-    },
-    onDrag() {
-      viewport.scrollLeft = dragStartOffset - this.x;
-    },
-    onRelease() {
-      viewport.style.cursor = "";
-    },
-  })[0];
-
-  return () => {
-    draggable.kill();
-  };
-}
-
 function createDesktopDailyScene(
   scene: HTMLElement,
   viewport: HTMLElement,
   track: HTMLElement,
 ) {
-  const getDistance = () =>
+  const measureDistance = () =>
     Math.max(0, track.scrollWidth - viewport.clientWidth);
+  const metrics = {
+    distance: 0,
+    span: 0,
+  };
 
   const animation = gsap.to(track, {
-    x: () => -getDistance(),
+    x: () => -(metrics.distance || measureDistance()),
     ease: "none",
     scrollTrigger: {
       trigger: scene,
       start: DAILY_MOTION.desktopStart,
-      end: () => `+=${getDistance()}`,
+      end: () => `+=${measureDistance()}`,
       scrub: DAILY_MOTION.scrub,
       pin: scene,
       anticipatePin: DAILY_MOTION.anticipatePin,
       invalidateOnRefresh: true,
+      onRefresh(self) {
+        metrics.distance = measureDistance();
+        metrics.span = self.end - self.start;
+      },
     },
   });
 
@@ -71,17 +51,16 @@ function createDesktopDailyScene(
   }
 
   const syncSceneOffset = (nextOffset: number) => {
-    const distance = getDistance();
+    const distance = metrics.distance;
 
     if (!distance) {
       return;
     }
 
     const clampedOffset = gsap.utils.clamp(0, distance, nextOffset);
-    const span = trigger.end - trigger.start;
     const progress = clampedOffset / distance;
 
-    trigger.scroll(trigger.start + span * progress);
+    trigger.scroll(trigger.start + metrics.span * progress);
   };
 
   const dragProxy = document.createElement("div");
@@ -94,7 +73,7 @@ function createDesktopDailyScene(
     zIndexBoost: false,
     minimumMovement: 6,
     onPress() {
-      dragStartOffset = Math.abs(Number(gsap.getProperty(track, "x")) || 0);
+      dragStartOffset = metrics.distance * trigger.progress;
       viewport.style.cursor = "grabbing";
       gsap.set(dragProxy, { x: 0 });
     },
@@ -128,9 +107,6 @@ export function useDailyBakesScene(rootRef: RootRef) {
       const dailyViewport =
         root.querySelector<HTMLElement>("[data-daily-viewport]");
       const dailyTrack = root.querySelector<HTMLElement>("[data-daily-track]");
-      const seasonalViewport = root.querySelector<HTMLElement>(
-        "[data-seasonal-viewport]",
-      );
 
       if (prefersReducedMotion || !dailyScene || !dailyViewport || !dailyTrack) {
         return;
@@ -139,27 +115,11 @@ export function useDailyBakesScene(rootRef: RootRef) {
       const mm = gsap.matchMedia();
 
       mm.add(DAILY_MOTION.desktopBreakpoint, () => {
-        const cleanups: Array<() => void> = [];
-
         if (dailyTrack.scrollWidth <= dailyViewport.clientWidth) {
-          if (seasonalViewport && seasonalViewport.scrollWidth > seasonalViewport.clientWidth) {
-            cleanups.push(createDesktopScrollableRail(seasonalViewport));
-          }
-
-          return () => {
-            cleanups.forEach((cleanup) => cleanup());
-          };
+          return;
         }
 
-        cleanups.push(createDesktopDailyScene(dailyScene, dailyViewport, dailyTrack));
-
-        if (seasonalViewport && seasonalViewport.scrollWidth > seasonalViewport.clientWidth) {
-          cleanups.push(createDesktopScrollableRail(seasonalViewport));
-        }
-
-        return () => {
-          cleanups.forEach((cleanup) => cleanup());
-        };
+        return createDesktopDailyScene(dailyScene, dailyViewport, dailyTrack);
       });
 
       return () => {

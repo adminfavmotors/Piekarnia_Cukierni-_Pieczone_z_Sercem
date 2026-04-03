@@ -87,6 +87,7 @@ export function HeroScene() {
             alt="Domowe drożdżówki i słodkie wypieki na blasze"
             fill
             priority
+            fetchPriority="high"
             placeholder="blur"
             quality={HERO_IMAGE_QUALITY}
             className="object-cover object-[28%_48%] sm:object-[34%_44%] lg:object-[42%_42%]"

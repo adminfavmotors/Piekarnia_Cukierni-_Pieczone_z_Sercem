@@ -84,54 +84,104 @@ export function useHomePageMotion(rootRef: RootRef) {
           });
         });
 
-      selectAll<HTMLElement>("[data-reveal]:not([data-scene-panel])").forEach((element) => {
-        gsap.fromTo(
-          element,
-          {
-            opacity: 0,
-            y: HOME_MOTION.reveal.y,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            duration: HOME_MOTION.reveal.duration,
-            ease: HOME_MOTION.reveal.ease,
-            scrollTrigger: {
-              trigger: element,
-              start: HOME_MOTION.reveal.start,
-              toggleActions: "play none none reverse",
-            },
-          },
-        );
+      const revealTargets = selectAll<HTMLElement>(
+        "[data-reveal]:not([data-scene-panel])",
+      );
+      const staggerGroups = selectAll<HTMLElement>("[data-stagger-group]");
+      const revealObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+              return;
+            }
+
+            const element = entry.target as HTMLElement;
+
+            gsap.fromTo(
+              element,
+              {
+                opacity: 0,
+                y: HOME_MOTION.reveal.y,
+              },
+              {
+                opacity: 1,
+                y: 0,
+                duration: HOME_MOTION.reveal.duration,
+                ease: HOME_MOTION.reveal.ease,
+                overwrite: "auto",
+              },
+            );
+
+            observer.unobserve(element);
+          });
+        },
+        {
+          rootMargin: "0px 0px -14% 0px",
+          threshold: 0.12,
+        },
+      );
+
+      revealTargets.forEach((element) => {
+        gsap.set(element, {
+          opacity: 0,
+          y: HOME_MOTION.reveal.y,
+        });
+        revealObserver.observe(element);
       });
 
-      selectAll<HTMLElement>("[data-stagger-group]").forEach((group) => {
-          const items = group.querySelectorAll<HTMLElement>("[data-stagger-item]");
+      const staggerObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+              return;
+            }
 
-          if (!items.length) {
-            return;
-          }
+            const group = entry.target as HTMLElement;
+            const items = group.querySelectorAll<HTMLElement>("[data-stagger-item]");
 
-          gsap.fromTo(
-            items,
-            {
-              opacity: 0,
-              y: HOME_MOTION.stagger.y,
-            },
-            {
-              opacity: 1,
-              y: 0,
-              duration: HOME_MOTION.stagger.duration,
-              stagger: HOME_MOTION.stagger.each,
-              ease: HOME_MOTION.stagger.ease,
-              scrollTrigger: {
-                trigger: group,
-                start: HOME_MOTION.stagger.start,
-                toggleActions: "play none none reverse",
+            if (!items.length) {
+              observer.unobserve(group);
+              return;
+            }
+
+            gsap.fromTo(
+              items,
+              {
+                opacity: 0,
+                y: HOME_MOTION.stagger.y,
               },
-            },
-          );
+              {
+                opacity: 1,
+                y: 0,
+                duration: HOME_MOTION.stagger.duration,
+                stagger: HOME_MOTION.stagger.each,
+                ease: HOME_MOTION.stagger.ease,
+                overwrite: "auto",
+              },
+            );
+
+            observer.unobserve(group);
+          });
+        },
+        {
+          rootMargin: "0px 0px -12% 0px",
+          threshold: 0.1,
+        },
+      );
+
+      staggerGroups.forEach((group) => {
+        const items = group.querySelectorAll<HTMLElement>("[data-stagger-item]");
+
+        if (!items.length) {
+          return;
+        }
+
+        gsap.set(items, {
+          opacity: 0,
+          y: HOME_MOTION.stagger.y,
         });
+        staggerObserver.observe(group);
+      });
 
       desktopMedia.add(HOME_MOTION.desktopBreakpoint, () => {
         const heroSection = selectOne<HTMLElement>("[data-theme-section='hero']");
@@ -278,6 +328,8 @@ export function useHomePageMotion(rootRef: RootRef) {
 
       return () => {
         delete root.dataset.pageTheme;
+        revealObserver.disconnect();
+        staggerObserver.disconnect();
         desktopMedia.revert();
       };
     },
