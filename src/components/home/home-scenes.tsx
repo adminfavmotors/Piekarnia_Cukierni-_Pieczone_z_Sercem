@@ -110,15 +110,13 @@ export function HeroScene() {
               data-hero-layer="copy"
               className="relative z-10 flex max-w-[22rem] flex-col justify-end pt-4 text-[var(--color-cream-light)] sm:max-w-[26rem] lg:max-w-[28rem] lg:pt-14"
             >
-              <div data-hero-label>
-                <SectionKicker
-                  tone="light"
-                  className="tracking-[0.32em] text-[rgba(255,248,241,0.82)] sm:text-xs"
-                >
-                  {siteData.hero.eyebrow}
-                </SectionKicker>
-              </div>
-              <div data-hero-copy className="mt-4 space-y-4">
+              <SectionKicker
+                tone="light"
+                className="tracking-[0.32em] text-[rgba(255,248,241,0.82)] sm:text-xs"
+              >
+                {siteData.hero.eyebrow}
+              </SectionKicker>
+              <div className="mt-4 space-y-4">
                 <h1 className="text-balance max-w-[10ch] font-display [font-size:var(--type-hero-title)] leading-[0.92] tracking-[-0.07em] text-white drop-shadow-[0_12px_28px_rgba(20,8,5,0.34)]">
                   {siteData.hero.title}
                 </h1>
@@ -129,10 +127,7 @@ export function HeroScene() {
                   {siteData.hero.description}
                 </SectionLead>
               </div>
-              <div
-                data-hero-actions
-                className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center"
-              >
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <ActionLink href="#co-dzis-pieczemy">
                   {siteData.hero.primaryCta}
                 </ActionLink>
@@ -144,10 +139,7 @@ export function HeroScene() {
 
             <div className="relative z-10 hidden lg:flex lg:justify-end">
               <div className="grid w-[21rem] gap-4">
-                <div
-                  data-hero-detail-slot="primary"
-                  className="flex justify-end"
-                >
+                <div className="flex justify-end">
                   <div
                     data-hero-detail-motion="primary"
                     className="w-[15rem] overflow-hidden rounded-[2rem] border border-[rgba(255,248,241,0.16)] bg-[rgba(255,248,241,0.14)] p-4 shadow-[0_22px_54px_rgba(0,0,0,0.16)] backdrop-blur-[4px]"
@@ -178,10 +170,7 @@ export function HeroScene() {
                   </div>
                 </div>
 
-                <div
-                  data-hero-detail-slot="secondary"
-                  className="flex justify-start pl-6"
-                >
+                <div className="flex justify-start pl-6">
                   <div className="-mt-10 w-full max-w-[18rem] pb-10">
                     <div
                       data-hero-detail-motion="secondary"
@@ -218,10 +207,7 @@ export function HeroScene() {
             >
               {siteData.hero.freshLabel}
             </Pill>
-            <div
-              data-hero-scroll-note
-              className="text-right text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[rgba(255,248,241,0.68)] sm:text-[0.72rem] sm:tracking-[0.24em]"
-            >
+            <div className="text-right text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[rgba(255,248,241,0.68)] sm:text-[0.72rem] sm:tracking-[0.24em]">
               {siteData.hero.scrollLabel}
             </div>
           </div>
