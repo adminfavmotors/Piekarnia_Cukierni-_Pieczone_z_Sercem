@@ -30,9 +30,12 @@ const scenePillarIcons = [Wheat, Leaf, HeartHandshake] as const;
 const HERO_IMAGE_QUALITY = 68;
 const SCENE_IMAGE_QUALITY = 72;
 const DESKTOP_DETAIL_IMAGE_SIZES = "(max-width: 1023px) 0px, 15rem";
-const HERO_DETAIL_RAIL_CLASS = "grid w-full max-w-[22rem] grid-cols-12 gap-y-6";
+const HERO_DETAIL_RAIL_CLASS = "grid w-full max-w-[28rem] grid-cols-12 gap-y-7";
 const HERO_DETAIL_PRIMARY_SLOT_CLASS = "col-span-8 col-start-5";
 const HERO_DETAIL_SECONDARY_SLOT_CLASS = "col-span-9 col-start-1";
+const WIDE_SCENE_CONTAINER_CLASS = "xl:max-w-[96rem] 2xl:max-w-[104rem]";
+const TASTE_PANEL_LAYOUT_CLASS =
+  "lg:grid lg:grid-cols-[minmax(0,0.56fr)_minmax(30rem,0.44fr)] lg:items-center lg:gap-16 xl:gap-20";
 
 export function SiteHeader() {
   return (
@@ -107,11 +110,13 @@ export function HeroScene() {
         className="absolute inset-x-0 bottom-0 h-[34vh] translate-y-[10%] bg-[linear-gradient(180deg,rgba(36,18,12,0)_0%,rgba(36,18,12,0.18)_30%,rgba(255,248,241,0.76)_100%)] opacity-0"
       />
 
-        <PageContainer className="relative flex min-h-svh flex-col justify-between gap-10 pb-6 pt-10 sm:gap-12 sm:pb-7 sm:pt-12 lg:pb-8 lg:pt-14">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-center lg:gap-12">
+        <PageContainer
+          className={`relative flex min-h-svh flex-col justify-between gap-10 pb-6 pt-10 sm:gap-12 sm:pb-7 sm:pt-12 lg:pb-8 lg:pt-14 ${WIDE_SCENE_CONTAINER_CLASS}`}
+        >
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(22rem,28rem)] lg:items-center lg:gap-16">
             <div
             data-hero-scroll-layer="copy"
-            className="relative z-10 flex max-w-[22rem] flex-col text-[var(--color-cream-light)] sm:max-w-[26rem] lg:max-w-[29rem]"
+            className="relative z-10 flex max-w-[24rem] flex-col text-[var(--color-cream-light)] sm:max-w-[30rem] lg:max-w-[37rem]"
             >
               <SectionKicker
                 tone="light"
@@ -119,13 +124,13 @@ export function HeroScene() {
               >
                 {siteData.hero.eyebrow}
               </SectionKicker>
-              <div className="mt-3.5 space-y-3">
-                <h1 className="text-balance max-w-[10ch] font-display [font-size:var(--type-hero-title)] leading-[0.92] tracking-[-0.07em] text-white drop-shadow-[0_12px_28px_rgba(20,8,5,0.34)]">
+              <div className="mt-3.5 space-y-3.5">
+                <h1 className="text-balance max-w-[11ch] font-display [font-size:var(--type-hero-title)] leading-[0.9] tracking-[-0.07em] text-white drop-shadow-[0_12px_28px_rgba(20,8,5,0.34)]">
                   {siteData.hero.title}
                 </h1>
                 <SectionLead
                   tone="light"
-                  className="max-w-[24rem] text-[0.98rem] leading-7 text-[rgba(255,248,241,0.88)] drop-shadow-[0_8px_18px_rgba(20,8,5,0.22)] sm:text-[1rem] sm:leading-[1.85]"
+                  className="max-w-[28rem] text-[0.98rem] leading-7 text-[rgba(255,248,241,0.88)] drop-shadow-[0_8px_18px_rgba(20,8,5,0.22)] sm:text-[1rem] sm:leading-[1.85] xl:max-w-[30rem]"
                 >
                   {siteData.hero.description}
                 </SectionLead>
@@ -145,7 +150,7 @@ export function HeroScene() {
                 <div className={HERO_DETAIL_PRIMARY_SLOT_CLASS}>
                   <div
                   data-hero-scroll-layer="primary"
-                  className="overflow-hidden rounded-[2rem] border border-[rgba(255,248,241,0.14)] bg-[rgba(255,248,241,0.12)] p-3.5 shadow-[0_18px_46px_rgba(0,0,0,0.14)] backdrop-blur-[4px]"
+                  className="overflow-hidden rounded-[2rem] border border-[rgba(255,248,241,0.14)] bg-[rgba(255,248,241,0.12)] p-4 shadow-[0_18px_46px_rgba(0,0,0,0.14)] backdrop-blur-[4px]"
                   >
                     <div className="relative aspect-[0.86] overflow-hidden rounded-[1.4rem]">
                       <Image
@@ -159,14 +164,14 @@ export function HeroScene() {
                         sizes={DESKTOP_DETAIL_IMAGE_SIZES}
                       />
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-3.5">
                       <SectionKicker
                         tone="light"
                         className="text-[0.68rem] tracking-[0.18em] text-[rgba(255,248,241,0.66)]"
                       >
                         {siteData.hero.breadLabel}
                       </SectionKicker>
-                      <p className="mt-1.5 text-[0.88rem] leading-6 text-[rgba(255,248,241,0.86)]">
+                      <p className="mt-1.5 text-[0.9rem] leading-6 text-[rgba(255,248,241,0.86)]">
                         {siteData.hero.breadDescription}
                       </p>
                     </div>
@@ -176,7 +181,7 @@ export function HeroScene() {
                 <div className={HERO_DETAIL_SECONDARY_SLOT_CLASS}>
                   <div
                     data-hero-scroll-layer="secondary"
-                    className="rounded-[2rem] border border-[rgba(255,248,241,0.14)] bg-[rgba(36,18,12,0.44)] px-4.5 py-4 shadow-[0_18px_48px_rgba(0,0,0,0.16)] backdrop-blur-[6px]"
+                    className="rounded-[2rem] border border-[rgba(255,248,241,0.14)] bg-[rgba(36,18,12,0.44)] px-5 py-4.5 shadow-[0_18px_48px_rgba(0,0,0,0.16)] backdrop-blur-[6px]"
                   >
                     <SectionKicker
                       tone="light"
@@ -191,7 +196,7 @@ export function HeroScene() {
                         </Pill>
                       ))}
                     </div>
-                    <p className="mt-3 text-[0.88rem] leading-6 text-[rgba(255,248,241,0.86)]">
+                    <p className="mt-3.5 text-[0.9rem] leading-6 text-[rgba(255,248,241,0.86)]">
                       {siteData.city}, {siteData.hours}
                     </p>
                   </div>
@@ -222,19 +227,21 @@ export function TasteScene() {
   return (
     <section
       data-theme-section="taste"
-      className="relative z-20 -mt-8 px-4 pb-12 pt-0 sm:-mt-10 sm:px-6 sm:pb-14 lg:-mt-[18svh] lg:pb-18 lg:px-10"
+      className="relative z-20 -mt-6 px-4 pb-12 pt-0 sm:-mt-8 sm:px-6 sm:pb-14 lg:-mt-28 lg:pb-18 lg:px-10 xl:-mt-32 2xl:-mt-36"
     >
-      <PageContainer>
+      <PageContainer className={WIDE_SCENE_CONTAINER_CLASS}>
         <div data-reveal data-scene-panel="taste">
-          <ScenePanel className="lg:grid lg:grid-cols-[minmax(0,0.52fr)_minmax(0,0.48fr)] lg:items-center lg:gap-12">
+          <ScenePanel
+            className={`${TASTE_PANEL_LAYOUT_CLASS} lg:px-10 lg:pb-12 lg:pt-14 xl:px-12 xl:pb-14 xl:pt-16`}
+          >
             <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(233,79,60,0.08),rgba(233,79,60,0))]" />
-            <div className="relative space-y-6 lg:max-w-[37rem]">
-              <div className="space-y-4 lg:max-w-[32rem]">
+            <div className="relative space-y-7 lg:max-w-[41rem]">
+              <div className="space-y-4.5 lg:max-w-[34rem] xl:max-w-[36rem]">
                 <SectionKicker>{siteData.taste.eyebrow}</SectionKicker>
-                <SectionTitle className="max-w-[13ch]">
+                <SectionTitle className="max-w-[12ch] lg:max-w-[11ch]">
                   {siteData.taste.title}
                 </SectionTitle>
-                <SectionLead className="max-w-[27rem]">
+                <SectionLead className="max-w-[28rem] xl:max-w-[30rem]">
                   {siteData.taste.description}
                 </SectionLead>
               </div>
@@ -242,7 +249,7 @@ export function TasteScene() {
               <div
                 data-stagger-group
                 data-stagger-mode="manual"
-                className="grid gap-3 sm:grid-cols-2 lg:content-start"
+                className="grid gap-4 sm:grid-cols-2 lg:max-w-[39rem] lg:content-start xl:gap-5"
               >
                 {siteData.taste.pillars.map(({ label, title, description }, index) => {
                   const Icon = scenePillarIcons[index];
@@ -254,8 +261,8 @@ export function TasteScene() {
                       tone="warm"
                       className={
                         index === 0
-                          ? "min-h-[11.75rem] rounded-[1.6rem] sm:col-span-2"
-                          : "min-h-[11rem] rounded-[1.6rem]"
+                          ? "min-h-[11.75rem] rounded-[1.6rem] sm:col-span-2 lg:min-h-[13rem]"
+                          : "min-h-[11rem] rounded-[1.6rem] lg:min-h-[12rem]"
                       }
                     >
                       <div className="flex items-start gap-3.5">
@@ -280,8 +287,11 @@ export function TasteScene() {
               </div>
             </div>
 
-            <div data-scene-photo="taste" className="relative mt-6 lg:mt-0 lg:self-center">
-              <div className="relative aspect-[0.88] overflow-hidden rounded-[2.2rem] shadow-[0_24px_56px_rgba(79,45,30,0.14)]">
+            <div
+              data-scene-photo="taste"
+              className="relative mt-6 lg:mt-0 lg:w-full lg:max-w-[36rem] lg:justify-self-end lg:self-center xl:max-w-[39rem]"
+            >
+              <div className="relative aspect-[0.92] overflow-hidden rounded-[2.2rem] shadow-[0_24px_56px_rgba(79,45,30,0.14)] xl:aspect-[0.9]">
                 <Image
                   src={bakeryMedia.cinnamonRolls}
                   alt="Cynamonki i drożdżówki pokazane w dużym, apetycznym kadrze"
@@ -290,7 +300,7 @@ export function TasteScene() {
                   loading="lazy"
                   quality={SCENE_IMAGE_QUALITY}
                   className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 42vw"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(46,26,18,0.02),rgba(46,26,18,0.24))]" />
               </div>
@@ -312,7 +322,7 @@ export function IngredientsScene() {
       data-theme-section="ingredients"
       className="relative z-30 -mt-6 px-4 pb-12 pt-0 sm:-mt-8 sm:px-6 sm:pb-14 lg:-mt-[14svh] lg:pb-18 lg:px-10"
     >
-      <PageContainer>
+      <PageContainer className={WIDE_SCENE_CONTAINER_CLASS}>
         <div data-reveal data-scene-panel="ingredients">
           <ScenePanel
             tone="cream"
