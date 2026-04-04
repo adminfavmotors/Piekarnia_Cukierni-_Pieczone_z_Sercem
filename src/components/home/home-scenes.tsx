@@ -30,6 +30,9 @@ const scenePillarIcons = [Wheat, Leaf, HeartHandshake] as const;
 const HERO_IMAGE_QUALITY = 68;
 const SCENE_IMAGE_QUALITY = 72;
 const DESKTOP_DETAIL_IMAGE_SIZES = "(max-width: 1023px) 0px, 15rem";
+const HERO_DETAIL_RAIL_CLASS = "grid w-full max-w-[22rem] grid-cols-12 gap-y-6";
+const HERO_DETAIL_PRIMARY_SLOT_CLASS = "col-span-8 col-start-5";
+const HERO_DETAIL_SECONDARY_SLOT_CLASS = "col-span-9 col-start-1";
 
 export function SiteHeader() {
   return (
@@ -78,10 +81,10 @@ export function HeroScene() {
     <section
       id="top"
       data-theme-section="hero"
-      className="relative isolate min-h-[100svh] overflow-x-hidden overflow-y-visible sm:min-h-[104svh] lg:min-h-[124svh]"
+      className="relative isolate min-h-svh overflow-x-hidden"
     >
-      <div className="relative min-h-[100svh] overflow-x-hidden overflow-y-visible sm:min-h-[104svh] lg:sticky lg:top-0 lg:min-h-svh">
-        <div data-hero-main-image className="absolute inset-0 scale-[1.01]">
+      <div className="relative min-h-svh">
+      <div data-hero-scroll-layer="main-image" className="absolute inset-0 scale-[1.01]">
           <Image
             src={bakeryMedia.heroBerries}
             alt="Domowe drożdżówki i słodkie wypieki na blasze"
@@ -95,39 +98,39 @@ export function HeroScene() {
           />
         </div>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(36,18,12,0.18)_0%,rgba(36,18,12,0.12)_26%,rgba(36,18,12,0.48)_100%)]" />
-        <div
-          data-hero-backdrop
-          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(36,18,12,0.4)_0%,rgba(36,18,12,0.12)_44%,rgba(36,18,12,0.22)_100%)] opacity-55"
-        />
-        <div
-          data-hero-floor
-          className="absolute inset-x-0 bottom-0 h-[34vh] translate-y-[10%] bg-[linear-gradient(180deg,rgba(36,18,12,0)_0%,rgba(36,18,12,0.18)_30%,rgba(255,248,241,0.76)_100%)] opacity-0"
-        />
+      <div
+        data-hero-scroll-layer="backdrop"
+        className="absolute inset-0 bg-[linear-gradient(90deg,rgba(36,18,12,0.34)_0%,rgba(36,18,12,0.1)_44%,rgba(36,18,12,0.18)_100%)] opacity-45"
+      />
+      <div
+        data-hero-scroll-layer="floor"
+        className="absolute inset-x-0 bottom-0 h-[34vh] translate-y-[10%] bg-[linear-gradient(180deg,rgba(36,18,12,0)_0%,rgba(36,18,12,0.18)_30%,rgba(255,248,241,0.76)_100%)] opacity-0"
+      />
 
-        <PageContainer className="relative flex min-h-[100svh] flex-col gap-7 pb-5 pt-10 sm:min-h-[104svh] sm:gap-9 sm:pb-6 sm:pt-12 lg:min-h-svh lg:gap-8 lg:pb-8 lg:pt-16">
-          <div className="grid gap-6 lg:grid-cols-[0.58fr_0.42fr] lg:items-start">
+        <PageContainer className="relative flex min-h-svh flex-col justify-between gap-10 pb-6 pt-10 sm:gap-12 sm:pb-7 sm:pt-12 lg:pb-8 lg:pt-14">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-center lg:gap-12">
             <div
-              data-hero-layer="copy"
-              className="relative z-10 flex max-w-[22rem] flex-col justify-end pt-4 text-[var(--color-cream-light)] sm:max-w-[26rem] lg:max-w-[28rem] lg:pt-14"
+            data-hero-scroll-layer="copy"
+            className="relative z-10 flex max-w-[22rem] flex-col text-[var(--color-cream-light)] sm:max-w-[26rem] lg:max-w-[29rem]"
             >
               <SectionKicker
                 tone="light"
-                className="tracking-[0.32em] text-[rgba(255,248,241,0.82)] sm:text-xs"
+                className="tracking-[0.3em] text-[rgba(255,248,241,0.78)] sm:text-[0.7rem]"
               >
                 {siteData.hero.eyebrow}
               </SectionKicker>
-              <div className="mt-4 space-y-4">
+              <div className="mt-3.5 space-y-3">
                 <h1 className="text-balance max-w-[10ch] font-display [font-size:var(--type-hero-title)] leading-[0.92] tracking-[-0.07em] text-white drop-shadow-[0_12px_28px_rgba(20,8,5,0.34)]">
                   {siteData.hero.title}
                 </h1>
                 <SectionLead
                   tone="light"
-                  className="max-w-md text-[rgba(255,248,241,0.94)] drop-shadow-[0_8px_18px_rgba(20,8,5,0.28)]"
+                  className="max-w-[24rem] text-[0.98rem] leading-7 text-[rgba(255,248,241,0.88)] drop-shadow-[0_8px_18px_rgba(20,8,5,0.22)] sm:text-[1rem] sm:leading-[1.85]"
                 >
                   {siteData.hero.description}
                 </SectionLead>
               </div>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="mt-5 flex flex-col gap-2.5 sm:flex-row sm:items-center">
                 <ActionLink href="#co-dzis-pieczemy">
                   {siteData.hero.primaryCta}
                 </ActionLink>
@@ -137,12 +140,12 @@ export function HeroScene() {
               </div>
             </div>
 
-            <div className="relative z-10 hidden lg:flex lg:justify-end">
-              <div className="grid w-[21rem] gap-4">
-                <div className="flex justify-end">
+            <div className="relative z-10 hidden lg:block">
+              <div className={HERO_DETAIL_RAIL_CLASS}>
+                <div className={HERO_DETAIL_PRIMARY_SLOT_CLASS}>
                   <div
-                    data-hero-detail-motion="primary"
-                    className="w-[15rem] overflow-hidden rounded-[2rem] border border-[rgba(255,248,241,0.16)] bg-[rgba(255,248,241,0.14)] p-4 shadow-[0_22px_54px_rgba(0,0,0,0.16)] backdrop-blur-[4px]"
+                  data-hero-scroll-layer="primary"
+                  className="overflow-hidden rounded-[2rem] border border-[rgba(255,248,241,0.14)] bg-[rgba(255,248,241,0.12)] p-3.5 shadow-[0_18px_46px_rgba(0,0,0,0.14)] backdrop-blur-[4px]"
                   >
                     <div className="relative aspect-[0.86] overflow-hidden rounded-[1.4rem]">
                       <Image
@@ -156,55 +159,53 @@ export function HeroScene() {
                         sizes={DESKTOP_DETAIL_IMAGE_SIZES}
                       />
                     </div>
-                    <div className="mt-4">
+                    <div className="mt-3">
                       <SectionKicker
                         tone="light"
-                        className="text-[0.7rem] tracking-[0.2em] text-[rgba(255,248,241,0.7)]"
+                        className="text-[0.68rem] tracking-[0.18em] text-[rgba(255,248,241,0.66)]"
                       >
                         {siteData.hero.breadLabel}
                       </SectionKicker>
-                      <p className="mt-2 text-[0.94rem] leading-6 text-[rgba(255,248,241,0.92)]">
+                      <p className="mt-1.5 text-[0.88rem] leading-6 text-[rgba(255,248,241,0.86)]">
                         {siteData.hero.breadDescription}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex justify-start pl-6">
-                  <div className="-mt-10 w-full max-w-[18rem] pb-10">
-                    <div
-                      data-hero-detail-motion="secondary"
-                      className="rounded-[2rem] border border-[rgba(255,248,241,0.16)] bg-[rgba(36,18,12,0.52)] px-5 py-5 shadow-[0_22px_56px_rgba(0,0,0,0.18)] backdrop-blur-[6px]"
+                <div className={HERO_DETAIL_SECONDARY_SLOT_CLASS}>
+                  <div
+                    data-hero-scroll-layer="secondary"
+                    className="rounded-[2rem] border border-[rgba(255,248,241,0.14)] bg-[rgba(36,18,12,0.44)] px-4.5 py-4 shadow-[0_18px_48px_rgba(0,0,0,0.16)] backdrop-blur-[6px]"
+                  >
+                    <SectionKicker
+                      tone="light"
+                      className="text-[0.68rem] tracking-[0.2em] text-[rgba(255,248,241,0.66)]"
                     >
-                      <SectionKicker
-                        tone="light"
-                        className="text-[0.7rem] tracking-[0.22em] text-[rgba(255,248,241,0.7)]"
-                      >
-                        {siteData.hero.todayLabel}
-                      </SectionKicker>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {siteData.dailyBakes.slice(0, 3).map((bake) => (
-                          <Pill key={bake.name} tone="darkGlass">
-                            {bake.category}
-                          </Pill>
-                        ))}
-                      </div>
-                      <p className="mt-4 text-[0.94rem] leading-6 text-[rgba(255,248,241,0.9)]">
-                        {siteData.city}, {siteData.hours}
-                      </p>
+                      {siteData.hero.todayLabel}
+                    </SectionKicker>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {siteData.dailyBakes.slice(0, 3).map((bake) => (
+                        <Pill key={bake.name} tone="darkGlass">
+                          {bake.category}
+                        </Pill>
+                      ))}
                     </div>
+                    <p className="mt-3 text-[0.88rem] leading-6 text-[rgba(255,248,241,0.86)]">
+                      {siteData.city}, {siteData.hours}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="relative z-10 mt-1 flex items-end justify-between gap-4 lg:mt-auto">
+          <div className="relative z-10 flex items-end justify-between gap-4">
             <Pill
               tone="darkGlass"
               className="max-w-[14rem] border border-[rgba(255,248,241,0.18)] bg-[rgba(255,248,241,0.12)] px-4 py-2 text-[0.68rem] tracking-[0.18em] backdrop-blur-[4px] sm:max-w-[18rem] sm:text-[0.72rem]"
-              data-hero-detail-pill
-            >
+            data-hero-scroll-layer="pill"
+          >
               {siteData.hero.freshLabel}
             </Pill>
             <div className="text-right text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[rgba(255,248,241,0.68)] sm:text-[0.72rem] sm:tracking-[0.24em]">
@@ -238,7 +239,11 @@ export function TasteScene() {
                 </SectionLead>
               </div>
 
-              <div data-stagger-group className="grid gap-3 sm:grid-cols-2 lg:content-start">
+              <div
+                data-stagger-group
+                data-stagger-mode="manual"
+                className="grid gap-3 sm:grid-cols-2 lg:content-start"
+              >
                 {siteData.taste.pillars.map(({ label, title, description }, index) => {
                   const Icon = scenePillarIcons[index];
 
@@ -345,7 +350,11 @@ export function IngredientsScene() {
                 description={siteData.ingredients.description}
               />
 
-              <div data-stagger-group className="grid gap-4 sm:grid-cols-2">
+              <div
+                data-stagger-group
+                data-stagger-mode="manual"
+                className="grid gap-4 sm:grid-cols-2"
+              >
                 {siteData.ingredients.notes.map((note, index) => (
                   <SceneCallout
                     key={note}

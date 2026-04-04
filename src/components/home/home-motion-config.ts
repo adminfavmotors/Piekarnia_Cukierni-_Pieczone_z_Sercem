@@ -1,3 +1,26 @@
+export const HERO_SCROLL_LAYERS = [
+  "main-image",
+  "copy",
+  "primary",
+  "secondary",
+  "pill",
+  "backdrop",
+  "floor",
+] as const;
+
+export type HeroScrollLayerName = (typeof HERO_SCROLL_LAYERS)[number];
+
+type HeroScrollLayerConfig = {
+  name: HeroScrollLayerName;
+  at?: number;
+  vars: {
+    opacity?: number;
+    scale?: number;
+    yPercent?: number;
+    ease: "none";
+  };
+};
+
 export const HOME_MOTION = {
   desktopBreakpoint: "(min-width: 1024px)",
   themeRange: {
@@ -20,15 +43,61 @@ export const HOME_MOTION = {
     end: "bottom top",
     scrub: 0.8,
     invalidateOnRefresh: true,
-    imageScale: 1.08,
-    imageYPercent: -8,
-    copyYPercent: -16,
-    copyOpacity: 0.45,
-    detailPrimaryYPercent: -12,
-    detailSecondaryYPercent: -16,
-    detailPillYPercent: -10,
-    backdropOpacity: 0.72,
-    floorYPercent: -10,
+    layers: [
+      {
+        name: "main-image",
+        vars: {
+          scale: 1.05,
+          yPercent: -6,
+          ease: "none",
+        },
+      },
+      {
+        name: "copy",
+        vars: {
+          opacity: 0.56,
+          yPercent: -12,
+          ease: "none",
+        },
+      },
+      {
+        name: "primary",
+        vars: {
+          yPercent: -8,
+          ease: "none",
+        },
+      },
+      {
+        name: "secondary",
+        vars: {
+          yPercent: -10,
+          ease: "none",
+        },
+      },
+      {
+        name: "pill",
+        vars: {
+          yPercent: -8,
+          ease: "none",
+        },
+      },
+      {
+        name: "backdrop",
+        vars: {
+          opacity: 0.58,
+          ease: "none",
+        },
+      },
+      {
+        name: "floor",
+        at: 0.08,
+        vars: {
+          opacity: 1,
+          yPercent: -8,
+          ease: "none",
+        },
+      },
+    ] satisfies readonly HeroScrollLayerConfig[],
   },
   sceneTransition: {
     start: "top 92%",

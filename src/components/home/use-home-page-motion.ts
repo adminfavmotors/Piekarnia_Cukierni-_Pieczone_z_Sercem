@@ -5,7 +5,12 @@ import { RefObject } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { HOME_MOTION, HOME_SCENES } from "@/components/home/home-motion-config";
+import {
+  HERO_SCROLL_LAYERS,
+  HOME_MOTION,
+  HOME_SCENES,
+  type HeroScrollLayerName,
+} from "@/components/home/home-motion-config";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -16,13 +21,7 @@ type HomeScene = (typeof HOME_SCENES)[number];
 
 type HeroMotionTargets = {
   section: HTMLElement | null;
-  copyLayer: HTMLElement | null;
-  mainImage: HTMLElement | null;
-  detailPrimary: HTMLElement | null;
-  detailSecondary: HTMLElement | null;
-  detailPill: HTMLElement | null;
-  backdrop: HTMLElement | null;
-  floor: HTMLElement | null;
+  layers: Record<HeroScrollLayerName, HTMLElement | null>;
   animatedElements: HTMLElement[];
 };
 
@@ -60,36 +59,19 @@ const clearAnimatedStyles = (elements: Array<HTMLElement | null | undefined>) =>
 };
 
 const getHeroMotionTargets = (selectOne: SelectOne): HeroMotionTargets => {
-  const copyLayer = selectOne<HTMLElement>("[data-hero-layer='copy']");
-  const mainImage = selectOne<HTMLElement>("[data-hero-main-image]");
-  const detailPrimary = selectOne<HTMLElement>(
-    "[data-hero-detail-motion='primary']",
-  );
-  const detailSecondary = selectOne<HTMLElement>(
-    "[data-hero-detail-motion='secondary']",
-  );
-  const detailPill = selectOne<HTMLElement>("[data-hero-detail-pill]");
-  const backdrop = selectOne<HTMLElement>("[data-hero-backdrop]");
-  const floor = selectOne<HTMLElement>("[data-hero-floor]");
+  const layers = Object.fromEntries(
+    HERO_SCROLL_LAYERS.map((name) => [
+      name,
+      selectOne<HTMLElement>(`[data-hero-scroll-layer='${name}']`),
+    ]),
+  ) as Record<HeroScrollLayerName, HTMLElement | null>;
 
   return {
     section: selectOne<HTMLElement>("[data-theme-section='hero']"),
-    copyLayer,
-    mainImage,
-    detailPrimary,
-    detailSecondary,
-    detailPill,
-    backdrop,
-    floor,
-    animatedElements: toDefinedElements([
-      copyLayer,
-      mainImage,
-      detailPrimary,
-      detailSecondary,
-      detailPill,
-      backdrop,
-      floor,
-    ]),
+    layers,
+    animatedElements: toDefinedElements(
+      HERO_SCROLL_LAYERS.map((name) => layers[name]),
+    ),
   };
 };
 
@@ -307,6 +289,10 @@ export function useHomePageMotion(rootRef: RootRef) {
       );
 
       staggerGroups.forEach((group) => {
+        if (group.dataset.staggerMode === "manual") {
+          return;
+        }
+
         const items = group.querySelectorAll<HTMLElement>("[data-stagger-item]");
 
         if (!items.length) {
@@ -323,7 +309,7 @@ export function useHomePageMotion(rootRef: RootRef) {
       desktopMedia.add(HOME_MOTION.desktopBreakpoint, () => {
         saveScrollTriggerStyles(heroTargets.animatedElements);
 
-        if (heroTargets.section && heroTargets.mainImage) {
+        if (heroTargets.section) {
           const heroTimeline = gsap.timeline({
             scrollTrigger: {
               trigger: heroTargets.section,
@@ -334,83 +320,15 @@ export function useHomePageMotion(rootRef: RootRef) {
             },
           });
 
-          heroTimeline.to(
-            heroTargets.mainImage,
-            {
-              scale: heroScroll.imageScale,
-              yPercent: heroScroll.imageYPercent,
-              ease: "none",
-            },
-            0,
-          );
+          heroScroll.layers.forEach((layer) => {
+            const target = heroTargets.layers[layer.name];
 
-          if (heroTargets.copyLayer) {
-            heroTimeline.to(
-              heroTargets.copyLayer,
-              {
-                yPercent: heroScroll.copyYPercent,
-                opacity: heroScroll.copyOpacity,
-                ease: "none",
-              },
-              0,
-            );
-          }
+            if (!target) {
+              return;
+            }
 
-          if (heroTargets.detailPrimary) {
-            heroTimeline.to(
-              heroTargets.detailPrimary,
-              {
-                yPercent: heroScroll.detailPrimaryYPercent,
-                ease: "none",
-              },
-              0,
-            );
-          }
-
-          if (heroTargets.detailSecondary) {
-            heroTimeline.to(
-              heroTargets.detailSecondary,
-              {
-                yPercent: heroScroll.detailSecondaryYPercent,
-                ease: "none",
-              },
-              0,
-            );
-          }
-
-          if (heroTargets.detailPill) {
-            heroTimeline.to(
-              heroTargets.detailPill,
-              {
-                yPercent: heroScroll.detailPillYPercent,
-                ease: "none",
-              },
-              0,
-            );
-          }
-
-          if (heroTargets.backdrop) {
-            heroTimeline.to(
-              heroTargets.backdrop,
-              {
-                opacity: heroScroll.backdropOpacity,
-                ease: "none",
-              },
-              0,
-            );
-          }
-
-          if (heroTargets.floor) {
-            heroTimeline.to(
-              heroTargets.floor,
-              {
-                opacity: 1,
-                yPercent: heroScroll.floorYPercent,
-                ease: "none",
-              },
-              0.08,
-            );
-          }
+            heroTimeline.to(target, layer.vars, layer.at ?? 0);
+          });
         }
 
         HOME_SCENES.forEach((scene) => {
