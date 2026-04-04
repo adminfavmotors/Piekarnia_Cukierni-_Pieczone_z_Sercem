@@ -84,7 +84,7 @@ export function HeroScene() {
     <section
       id="top"
       data-theme-section="hero"
-      className="relative isolate min-h-svh overflow-x-hidden"
+      className="relative isolate min-h-svh overflow-x-clip overflow-y-visible"
     >
       <div className="relative min-h-svh">
       <div data-hero-scroll-layer="main-image" className="absolute inset-0 scale-[1.01]">
