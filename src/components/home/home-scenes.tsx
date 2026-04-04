@@ -34,7 +34,7 @@ const DESKTOP_DETAIL_IMAGE_SIZES = "(max-width: 1023px) 0px, 15rem";
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-[rgba(79,45,30,0.08)] bg-[var(--header-bg)]/96 backdrop-blur-md transition-colors duration-500">
-      <PageContainer className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 py-3 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:gap-6">
+      <PageContainer className="flex items-center justify-between gap-4 py-3">
         <div className="flex min-w-0 flex-col">
           <a
             href="#top"
@@ -45,14 +45,6 @@ export function SiteHeader() {
           <span className="mt-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-brown-soft)] sm:text-[0.72rem]">
             {siteData.city}
           </span>
-        </div>
-
-        <div className="hidden min-w-0 items-center justify-center gap-4 xl:flex">
-          <span className="h-px w-12 bg-[linear-gradient(90deg,transparent,rgba(79,45,30,0.18))]" />
-          <span className="truncate text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-brown-soft)]">
-            {siteData.hero.eyebrow}
-          </span>
-          <span className="h-px w-12 bg-[linear-gradient(90deg,rgba(79,45,30,0.18),transparent)]" />
         </div>
 
         <div className="flex items-center gap-2">
@@ -233,61 +225,58 @@ export function TasteScene() {
     >
       <PageContainer>
         <div data-reveal data-scene-panel="taste">
-          <ScenePanel className="lg:grid lg:grid-cols-[minmax(0,0.54fr)_minmax(0,0.46fr)] lg:grid-rows-[auto_auto] lg:items-start lg:gap-x-10 lg:gap-y-8">
+          <ScenePanel className="lg:grid lg:grid-cols-[minmax(0,0.52fr)_minmax(0,0.48fr)] lg:items-center lg:gap-12">
             <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(233,79,60,0.08),rgba(233,79,60,0))]" />
-            <div className="relative space-y-4 lg:max-w-[48rem]">
-              <SectionKicker>{siteData.taste.eyebrow}</SectionKicker>
-              <SectionTitle>{siteData.taste.title}</SectionTitle>
-              <SectionLead className="max-w-[36rem]">
-                {siteData.taste.description}
-              </SectionLead>
+            <div className="relative space-y-6 lg:max-w-[37rem]">
+              <div className="space-y-4 lg:max-w-[32rem]">
+                <SectionKicker>{siteData.taste.eyebrow}</SectionKicker>
+                <SectionTitle className="max-w-[13ch]">
+                  {siteData.taste.title}
+                </SectionTitle>
+                <SectionLead className="max-w-[27rem]">
+                  {siteData.taste.description}
+                </SectionLead>
+              </div>
+
+              <div data-stagger-group className="grid gap-3 sm:grid-cols-2 lg:content-start">
+                {siteData.taste.pillars.map(({ label, title, description }, index) => {
+                  const Icon = scenePillarIcons[index];
+
+                  return (
+                    <SceneCallout
+                      key={label}
+                      data-stagger-item
+                      tone="warm"
+                      className={
+                        index === 0
+                          ? "min-h-[11.75rem] rounded-[1.6rem] sm:col-span-2"
+                          : "min-h-[11rem] rounded-[1.6rem]"
+                      }
+                    >
+                      <div className="flex items-start gap-3.5">
+                        <div className="rounded-full bg-[rgba(233,79,60,0.12)] p-3 text-[var(--color-accent)]">
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <div className="space-y-1.5">
+                          <SectionKicker className="tracking-[0.24em]">
+                            {label}
+                          </SectionKicker>
+                          <SectionTitle as="h3" size="callout" className="max-w-[16ch]">
+                            {title}
+                          </SectionTitle>
+                          <p className="text-pretty text-[0.96rem] leading-6 text-[var(--color-brown-muted)]">
+                            {description}
+                          </p>
+                        </div>
+                      </div>
+                    </SceneCallout>
+                  );
+                })}
+              </div>
             </div>
 
-            <SceneCallout className="hidden h-fit bg-white/72 lg:block lg:max-w-[18rem] lg:justify-self-end">
-              <SectionKicker>{siteData.taste.photoKicker}</SectionKicker>
-              <p className="mt-3 text-[0.96rem] leading-6 text-[var(--color-brown-muted)]">
-                {siteData.taste.photoDescription}
-              </p>
-            </SceneCallout>
-
-            <div data-stagger-group className="grid gap-4 lg:grid-cols-2 lg:content-start">
-              {siteData.taste.pillars.map(({ label, title, description }, index) => {
-                const Icon = scenePillarIcons[index];
-
-                return (
-                  <SceneCallout
-                    key={label}
-                    data-stagger-item
-                    tone="warm"
-                    className={
-                      index === 0
-                        ? "min-h-[12.75rem] rounded-[1.6rem] lg:col-span-2"
-                        : "min-h-[12rem] rounded-[1.6rem]"
-                    }
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-full bg-[rgba(233,79,60,0.12)] p-3 text-[var(--color-accent)]">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <div className="space-y-2">
-                        <SectionKicker className="tracking-[0.24em]">
-                          {label}
-                        </SectionKicker>
-                        <SectionTitle as="h3" size="callout">
-                          {title}
-                        </SectionTitle>
-                        <p className="text-pretty text-[0.96rem] leading-6 text-[var(--color-brown-muted)]">
-                          {description}
-                        </p>
-                      </div>
-                    </div>
-                  </SceneCallout>
-                );
-              })}
-            </div>
-
-            <div data-scene-photo="taste" className="relative mt-6 lg:mt-0 lg:self-end">
-              <div className="relative aspect-[0.92] overflow-hidden rounded-[2.2rem] shadow-[0_24px_56px_rgba(79,45,30,0.14)]">
+            <div data-scene-photo="taste" className="relative mt-6 lg:mt-0 lg:self-center">
+              <div className="relative aspect-[0.88] overflow-hidden rounded-[2.2rem] shadow-[0_24px_56px_rgba(79,45,30,0.14)]">
                 <Image
                   src={bakeryMedia.cinnamonRolls}
                   alt="Cynamonki i drożdżówki pokazane w dużym, apetycznym kadrze"
@@ -300,12 +289,6 @@ export function TasteScene() {
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(46,26,18,0.02),rgba(46,26,18,0.24))]" />
               </div>
-              <SceneCallout className="absolute -bottom-8 left-0 max-w-[18rem] sm:left-8 lg:hidden">
-                <SectionKicker>{siteData.taste.photoKicker}</SectionKicker>
-                <p className="mt-3 text-[0.96rem] leading-6 text-[var(--color-brown-muted)]">
-                  {siteData.taste.photoDescription}
-                </p>
-              </SceneCallout>
             </div>
           </ScenePanel>
         </div>
@@ -404,29 +387,23 @@ export function HeartScene() {
         <div data-reveal data-scene-panel="heart">
           <ScenePanel
             tone="dark"
-            className="rounded-[var(--radius-scene-lg)] pb-10 pt-10 sm:pb-12 sm:pt-12 lg:grid lg:grid-cols-[minmax(0,0.56fr)_minmax(0,0.44fr)] lg:items-start lg:gap-10 lg:pb-14 lg:pt-12"
+            className="rounded-[var(--radius-scene-lg)] pb-10 pt-10 sm:pb-12 sm:pt-12 lg:grid lg:grid-cols-[minmax(0,0.54fr)_minmax(0,0.46fr)] lg:items-center lg:gap-10 lg:pb-14 lg:pt-12"
           >
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(233,79,60,0.08),rgba(233,79,60,0))]" />
-            <div className="relative space-y-6 lg:max-w-[39rem] lg:pt-2">
+            <div className="relative space-y-4 lg:max-w-[34rem]">
               <SectionKicker tone="light" className="tracking-[0.3em]">
                 {siteData.heart.eyebrow}
               </SectionKicker>
-              <SectionTitle tone="light" size="display">
+              <SectionTitle tone="light" size="display" className="max-w-[11ch]">
                 {siteData.heart.title}
               </SectionTitle>
-              <SectionLead tone="light" className="max-w-[32rem]">
+              <SectionLead tone="light" className="max-w-[27rem]">
                 {siteData.heart.description}
               </SectionLead>
-              <div className="hidden items-center gap-4 pt-2 lg:flex">
-                <span className="h-px w-14 bg-[linear-gradient(90deg,rgba(255,248,241,0.42),transparent)]" />
-                <p className="max-w-[15rem] text-[0.8rem] font-semibold uppercase tracking-[0.22em] text-[rgba(255,248,241,0.62)]">
-                  {siteData.heart.photoKicker}
-                </p>
-              </div>
             </div>
 
-            <div data-scene-photo="heart" className="relative mt-6 lg:mt-0 lg:self-end">
-              <div className="relative ml-auto aspect-[0.92] max-w-[29rem] overflow-hidden rounded-[2.2rem] border border-[rgba(255,248,241,0.12)] shadow-[0_22px_60px_rgba(0,0,0,0.18)]">
+            <div data-scene-photo="heart" className="relative mt-6 lg:mt-0 lg:self-center">
+              <div className="relative ml-auto aspect-[0.92] max-w-[30rem] overflow-hidden rounded-[2.2rem] border border-[rgba(255,248,241,0.12)] shadow-[0_22px_60px_rgba(0,0,0,0.18)]">
                 <Image
                   src={bakeryMedia.heroBerries}
                   alt="Zbliżenie na domowe wypieki jako ciepła, emocjonalna scena"
@@ -438,21 +415,21 @@ export function HeartScene() {
                   sizes="(max-width: 1024px) 100vw, 30vw"
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(46,26,18,0.08),rgba(46,26,18,0.28))]" />
-              </div>
-              <SceneCallout
-                tone="glass"
-                className="absolute -bottom-8 left-0 max-w-[17rem] sm:left-6"
-              >
-                <SectionKicker
-                  tone="light"
-                  className="text-[rgba(255,248,241,0.76)]"
+                <SceneCallout
+                  tone="glass"
+                  className="absolute bottom-5 left-5 max-w-[15.5rem] sm:bottom-6 sm:left-6"
                 >
-                  {siteData.heart.photoKicker}
-                </SectionKicker>
-                <p className="mt-3 text-[0.96rem] leading-6 text-[rgba(255,248,241,0.9)]">
-                  {siteData.heart.photoDescription}
-                </p>
-              </SceneCallout>
+                  <SectionKicker
+                    tone="light"
+                    className="text-[rgba(255,248,241,0.76)]"
+                  >
+                    {siteData.heart.photoKicker}
+                  </SectionKicker>
+                  <p className="mt-3 text-[0.96rem] leading-6 text-[rgba(255,248,241,0.9)]">
+                    {siteData.heart.photoDescription}
+                  </p>
+                </SceneCallout>
+              </div>
             </div>
           </ScenePanel>
         </div>

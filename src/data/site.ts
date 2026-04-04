@@ -73,7 +73,6 @@ export const siteData = {
   hours: "pon.\u2013sob., 8.00\u201316.00",
   phone: null as string | null,
   header: {
-    hoursLabel: "Godziny",
     phoneLabel: "Telefon",
     contactFallback: "Kontakt",
   },
@@ -97,9 +96,6 @@ export const siteData = {
       "\u015awie\u017ce wypieki, po kt\u00f3re wpada si\u0119 rano, w po\u0142udnie i po prostu z przyjemno\u015bci\u0105.",
     description:
       "Na pierwszym planie s\u0105 zapach, kolor i ciep\u0142o pieca. Tekstu jest mniej, bo tutaj najpierw ma dzia\u0142a\u0107 apetyt.",
-    photoKicker: "Od rana pachnie piecem",
-    photoDescription:
-      "Najmocniej dzia\u0142a prosty widok: \u015bwie\u017ca blacha, mi\u0119kki \u015brodek i z\u0142oty wierzch.",
     pillars: [
       {
         label: "Smak",
